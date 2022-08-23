@@ -16,7 +16,9 @@ unsigned short DIASPORANIO = 0;
 unsigned short SEGPORHORA = 0;
 
 unsigned short diasDesdeNacimiento = 0;
+unsigned short origDiasNacimiento = 0;
 unsigned int horasDesdeNacimiento = 0;
+unsigned int origHorasNacimiento = 0;
 unsigned int segDesdeNacimiento = 0;
 
 int main(void){
@@ -70,14 +72,65 @@ int main(void){
 	 * uno de los ceros mencionados y al final del binario también se asigna un cero, en el segundo shift-izq
 	 * el número que se obtiene es 1001101100110100, los ceros que antes estaban a la derecha pasaron a la izq
 	 *
-	 * si se aplicara el shift-izq 4 veces al número original se perdería información ya que al correr mas de
-	 * dos veces el primer bit 1 se perdería y en su lugar entra un valor 0 a la derecha del binario, no se podría
-	 * recuperar el mismo valor regresando con un shift-derecha.
+	 * si se aplica el shift-izq 4 veces al número original se perdería información ya que al correr mas de
+	 * dos veces el primer bit 1 (Posición 16 MSB) se perdería y en su lugar entra un valor 0 a la derecha del
+	 * binario (LSB), no se podría recuperar el mismo valor regresando con un shift-derecha.
 	 */
 	//Aplicación de shift-izq a diasDesdeNacimiento
 	diasDesdeNacimiento = diasDesdeNacimiento << 1;
 
 	//Segunda aplicación de shift-izq
 	diasDesdeNacimiento = diasDesdeNacimiento << 1;
-}
 
+	/**
+	 * 7. Se sabe que la variable horasDesdeNacimiento es de tipo int (32 bits), si realizamos un shift-der las
+	 * posiciones de los binarios se corren hacia la derecha, si se aplica una segunda vez el bit de valor 1 que
+	 * estaba en la tercera casilla de derecha a izq quedará ubicado en la primera (LSB), si se aplica mas de dos
+	 * veces el shift-der ocurre lo mismo que el anterior punto, se empezara a perder la información del binario
+	 */
+	//Aplicación de shift-der a horasDesdeNacimiento
+	horasDesdeNacimiento = horasDesdeNacimiento >> 1;
+
+	//Segunda aplicación de shift-der
+	horasDesdeNacimiento = horasDesdeNacimiento >> 1;
+
+	/**
+	 * 8. Primero se guarda en una nueva variable el valor original de diasDesdeNacimiento, luego se utiliza la
+	 * operación bitwise not (~) invirtiendo cada bit, a este valor se le sumó 1, al hacer esto se observa que el
+	 * resultado es un complemento a dos (C2) del valor original de la variable, esto quiere decir que se está
+	 * representando el mismo número pero es su valor negativo, por lo que al sumarse se entiende que el resultado da 0,
+	 * esto va a ocurrir con cualquier valor dado que el procedimiento es el mismo, se realiza con horas desde nacimiento
+	 */
+	//Guardando valor original de diasDesdeNacimiento para posterior uso
+	origDiasNacimiento = diasDesdeNacimiento;
+
+	//Invirtiendo (NOT) el valor de diasDesdeNacimiento
+	diasDesdeNacimiento = ~diasDesdeNacimiento;
+
+	//Sumando 1 a este valor
+	diasDesdeNacimiento ++;
+
+	//Sumando valor de la variable original
+	diasDesdeNacimiento = diasDesdeNacimiento + origDiasNacimiento;
+
+
+	//Guardando valor original de diasDesdeNacimiento para posterior uso
+	origHorasNacimiento = horasDesdeNacimiento;
+
+	//Invirtiendo (NOT) el valor de diasDesdeNacimiento
+	horasDesdeNacimiento = ~horasDesdeNacimiento;
+
+	//Sumando 1 a este valor
+	horasDesdeNacimiento ++;
+
+	//Sumando valor de la variable original
+	horasDesdeNacimiento = horasDesdeNacimiento + origHorasNacimiento;
+
+	/**
+	 * 9.El numero en la posición #4 es un 7, por lo tanto se hace una mascara para obtener las posiciones 0,2 y 6, para
+	 * realizar esto se recuerda que cada posicion en hexadecimales representa 4 bits binarios, por lo que si se desea obtener
+	 * esas posiciones basta con realizar una oparacion bitwise AND con un valor F (4 bites con valor 1) en las posiciones mencionadas
+	 */
+	//Se realiza la operacion bitwise AND
+	segDesdeNacimiento = segDesdeNacimiento & 0x0F000F0F;
+}
