@@ -9,7 +9,8 @@
 /**
  * 1. Se selecciona tipo char para la edad dado que no se conoce alguien con mas de 255 años.
  * Los valores de días por año y segundos por hora son constantes mayores a 255 (char) y
- * menores que 65535 (short).
+ * menores que 65535 (short). Se guardan variables con el prefijo orig para conservar el valor original,
+ * si hace falta se genera otra variable para manipular este resultado
  */
 unsigned char numeroAnios = 0;
 unsigned short DIASPORANIO = 0;
@@ -20,6 +21,7 @@ unsigned short origDiasNacimiento = 0;
 unsigned int horasDesdeNacimiento = 0;
 unsigned int origHorasNacimiento = 0;
 unsigned int segDesdeNacimiento = 0;
+unsigned int origSegNacimiento = 0;
 
 int main(void){
 
@@ -35,7 +37,7 @@ int main(void){
 	 */
 
 	//Creación de la variable que contiene los días desde el nacimiento
-	diasDesdeNacimiento = numeroAnios * DIASPORANIO + 78;
+	origDiasNacimiento = numeroAnios * DIASPORANIO + 78;
 
 	/**
 	 * 3. Para calcular el número de horas desde el nacimiento se puede multiplicar el numero de
@@ -45,16 +47,16 @@ int main(void){
 	 */
 
 	//Creación y cálculo de la variable que contiene las horas desde el nacimiento
-	horasDesdeNacimiento = diasDesdeNacimiento * 24 + 12;
+	origHorasNacimiento = origDiasNacimiento * 24 + 12;
 
 	/**
 	 * 4. Para el calculo del número de segundos transcurridos desde el nacimiento se puede realizar
-	 * la multiplicación entre las horas transcurridas (horasDesdeNacimiento) y los segundos que hay
+	 * la multiplicación entre las horas transcurridas (origHorasNacimiento) y los segundos que hay
 	 * en una hora (SEGPORHORA). El valor ronda los 850'000.000 y se puede usar tipo unsigned int.
 	 */
 
 	//Creación y cálculo de la variable que contiene los segundos desde el nacimeinto
-	segDesdeNacimiento = horasDesdeNacimiento * SEGPORHORA;
+	origSegNacimiento = origHorasNacimiento * SEGPORHORA;
 
 	/**
 	 * 5. Para obtener los valores solicitados se realizo desde la perspectiva debugger observando
@@ -77,6 +79,7 @@ int main(void){
 	 * binario (LSB), no se podría recuperar el mismo valor regresando con un shift-derecha.
 	 */
 	//Aplicación de shift-izq a diasDesdeNacimiento
+	diasDesdeNacimiento = origDiasNacimiento;
 	diasDesdeNacimiento = diasDesdeNacimiento << 1;
 
 	//Segunda aplicación de shift-izq
@@ -89,6 +92,7 @@ int main(void){
 	 * veces el shift-der ocurre lo mismo que el anterior punto, se empezara a perder la información del binario
 	 */
 	//Aplicación de shift-der a horasDesdeNacimiento
+	horasDesdeNacimiento = origHorasNacimiento;
 	horasDesdeNacimiento = horasDesdeNacimiento >> 1;
 
 	//Segunda aplicación de shift-der
@@ -101,11 +105,8 @@ int main(void){
 	 * representando el mismo número pero es su valor negativo, por lo que al sumarse se entiende que el resultado da 0,
 	 * esto va a ocurrir con cualquier valor dado que el procedimiento es el mismo, se realiza con horas desde nacimiento
 	 */
-	//Guardando valor original de diasDesdeNacimiento para posterior uso
-	origDiasNacimiento = diasDesdeNacimiento;
-
-	//Invirtiendo (NOT) el valor de diasDesdeNacimiento
-	diasDesdeNacimiento = ~diasDesdeNacimiento;
+	//Invirtiendo (NOT) el valor de origDiasNacimiento
+	diasDesdeNacimiento = ~origDiasNacimiento;
 
 	//Sumando 1 a este valor
 	diasDesdeNacimiento ++;
@@ -114,11 +115,8 @@ int main(void){
 	diasDesdeNacimiento = diasDesdeNacimiento + origDiasNacimiento;
 
 
-	//Guardando valor original de diasDesdeNacimiento para posterior uso
-	origHorasNacimiento = horasDesdeNacimiento;
-
-	//Invirtiendo (NOT) el valor de diasDesdeNacimiento
-	horasDesdeNacimiento = ~horasDesdeNacimiento;
+	//Invirtiendo (NOT) el valor de origHorasNacimiento
+	horasDesdeNacimiento = ~origHorasNacimiento;
 
 	//Sumando 1 a este valor
 	horasDesdeNacimiento ++;
@@ -131,6 +129,23 @@ int main(void){
 	 * realizar esto se recuerda que cada posicion en hexadecimales representa 4 bits binarios, por lo que si se desea obtener
 	 * esas posiciones basta con realizar una oparacion bitwise AND con un valor F (4 bites con valor 1) en las posiciones mencionadas
 	 */
-	//Se realiza la operacion bitwise AND
-	segDesdeNacimiento = segDesdeNacimiento & 0x0F000F0F;
+	//Se realiza la operacion bitwise AND (Máscara)
+	segDesdeNacimiento = origSegNacimiento & 0x0F000F0F;
+
+	/**
+	 * 10. En el punto se aplica la máscara 0x040 y dado que el resultado es 0x40 se realiza el item (b)
+	 */
+	//Se realiza la operacion bitwise AND (Máscara)
+	segDesdeNacimiento = origSegNacimiento & 0x040;
+
+	//Ya que el resultado anterior es distinto de 0 se utiliza una máscara que solo elimine la posición 6.
+	segDesdeNacimiento = origSegNacimiento & 0xF0FFFFFF;
+
+	/**
+	 * 11. Al aplicar el operador ! sobre la variable origSegNacimiento, se observa que su valor se convierte en 0, a este operador se
+	 * le conoce como logical NOT por lo que al entregarle un valor distinto a un booleano, el operador regresa el valor 0, al aplicar
+	 * de nuevo sobre el cero obtenido el operador niega el 0 binario y lo convierte en 1.
+	 */
+	segDesdeNacimiento = !origSegNacimiento;
+	segDesdeNacimiento = !segDesdeNacimiento;
 }
