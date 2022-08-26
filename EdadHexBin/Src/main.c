@@ -16,11 +16,11 @@ unsigned char numeroAnios = 0;
 unsigned short DIASPORANIO = 0;
 unsigned short SEGPORHORA = 0;
 
-unsigned short diasDesdeNacimiento = 0;
+unsigned short diasDesdeNacimiento = 0; //Variable creada para manipular el valor original Dias desde nacimiento
 unsigned short origDiasNacimiento = 0;
-unsigned int horasDesdeNacimiento = 0;
+unsigned int horasDesdeNacimiento = 0; //Variable creada para manipular el valor original Horas desde nacimiento
 unsigned int origHorasNacimiento = 0;
-unsigned int segDesdeNacimiento = 0;
+unsigned int segDesdeNacimiento = 0; //Variable creada para manipular el valor original Segundos desde nacimiento
 unsigned int origSegNacimiento = 0;
 
 int main(void){
