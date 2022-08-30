@@ -334,4 +334,3 @@ typedef struct
 } DUMMY_RegDef_t;
 */
 #endif /* INC_STM32F411XX_HAL_H */
- */
