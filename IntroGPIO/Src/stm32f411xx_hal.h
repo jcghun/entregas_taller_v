@@ -265,9 +265,9 @@ typedef struct
 /* Valores estándar para las configuraciones */
 /* 8.4.1 GPIOx_MODER (dos bit por cada PIN) */
 #define GPIO_MODE_IN		0
-#define GPIO_MODE_OUT		0
-#define GPIO_MODE_ALTFN		0
-#define GPIO_MODE_ANALOG	0
+#define GPIO_MODE_OUT		1
+#define GPIO_MODE_ALTFN		2
+#define GPIO_MODE_ANALOG	3
 
 /* 8.4.2 GPIOx_OTYPER (un bit por PIN) */
 #define GPIO_OTYPE_PUSHPULL		0

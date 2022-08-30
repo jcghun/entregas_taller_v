@@ -66,7 +66,7 @@ void GPIO_Config (GPIO_Handler_t *pGPIOHandler){
 
 	// Antes de cargar el nuevo valor, limpiamos los bits especificos de ese registro (debemos escribir 0b00)
 	// para lo cual aplicamos una máscara y una operación bitwise AND
-	pGPIOHandler->pGPIOx->MODER &= ~(ob11 << 2 * pGPIOHandler->GPIO_PinConfig.GPIO_PinNumber);
+	pGPIOHandler->pGPIOx->MODER &= ~(0b11 << 2 * pGPIOHandler->GPIO_PinConfig.GPIO_PinNumber);
 
 	// Cargamos a auxConfig en el registro MODER
 	pGPIOHandler->pGPIOx->MODER |= auxConfig;
@@ -132,7 +132,7 @@ void GPIO_Config (GPIO_Handler_t *pGPIOHandler){
  *  Función utilizada para cambiar de estado el pin entregado en el handler, asignando
  *  el valor entregado en la variable newState
  */
-void GPIO_WritePin(GPIO_Handler_t *pPinHandler, uint32_t newState){
+void GPIO_WritePin(GPIO_Handler_t *pPinHandler, uint8_t newState){
 	//Limpiamos la posición que deseamos
 	//pPinHandler->pGPIOx->ODR &= ~ (SET << pPinHandler->GPIO_PinConfig.GPIO_PinNumber);
 	if(newState == SET){
