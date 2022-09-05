@@ -2,7 +2,9 @@
  * main.c
  *
  *  Created on: Aug 18, 2022
- *      Author: camilo
+ *      Author: Juan Camilo Gómez Hidalgo
+ *      Email: jucgomezhi@unal.edu.co
+ *      Fecha Nacimiento: 31/05/1995
  */
 
 //Inicialización de variables
