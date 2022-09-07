@@ -42,6 +42,11 @@
 #include "stm32f411xx_hal.h"
 #include "GPIOxDriver.h"
 
+void delayMS(int delay);
+
+unsigned int i = 0;
+
+
 /* Función principal del programa. Es acá donde se ejecuta todo */
 int main(void){
 
@@ -60,12 +65,26 @@ int main(void){
 
 	//Cargamos la configuración del PIN específico
 	GPIO_Config(&handlerUserLedPin);
+	RCC->AHB1ENR  |= 0x00000001;
+	GPIOA ->MODER |= 0x00000400;
 
 	//Hacemos que el PIN_A5 quede encendido
 	GPIO_WritePin(&handlerUserLedPin, SET);
 
-	// Este es el ciclo principal, donde se ejecuta todo el programa
+	// Este es el ciclo principal, donde se ejecuta to do el programa
+
 	while(1){
-		NOP();
+		GPIOA->ODR |= (1<<5);
+		delayMS(600);
+		GPIOA->ODR &= ~(1<<5);
+		delayMS(600);
 	}
+}
+
+void delayMS(int delay)
+{
+		for( ; delay > 0; delay--)
+			for(i = 0; i <= 3195; i++){
+		}
+
 }

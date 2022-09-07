@@ -1,0 +1,6 @@
+"./Src/Ejercicio_02_Main.o"
+"./Src/GPIOxDriver.o"
+"./Src/GPIOxDriverMain.o"
+"./Src/syscalls.o"
+"./Src/sysmem.o"
+"./Startup/startup_stm32f411retx.o"
