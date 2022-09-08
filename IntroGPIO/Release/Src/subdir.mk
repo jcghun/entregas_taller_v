@@ -7,21 +7,18 @@
 C_SRCS += \
 ../Src/Ejercicio_02_Main.c \
 ../Src/GPIOxDriver.c \
-../Src/GPIOxDriverMain.c \
 ../Src/syscalls.c \
 ../Src/sysmem.c 
 
 OBJS += \
 ./Src/Ejercicio_02_Main.o \
 ./Src/GPIOxDriver.o \
-./Src/GPIOxDriverMain.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o 
 
 C_DEPS += \
 ./Src/Ejercicio_02_Main.d \
 ./Src/GPIOxDriver.d \
-./Src/GPIOxDriverMain.d \
 ./Src/syscalls.d \
 ./Src/sysmem.d 
 
