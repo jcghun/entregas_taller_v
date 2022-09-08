@@ -122,7 +122,9 @@ int main(void){
 	/**
 	 * Punto 4. (Por favor eliminar de comentarios para verificar y comentar el punto 3) Uso de un boton externo para controlar
 	 * 3 LED externos conectados en los pines PC10, PC11 y PC12.
+	*/
 
+	//Antes de la hora de entrega el codigo que sigue estaba comentado, solammente se quitó de comentarios
 
 	//Funcion utilizada para crear un lapso de tiempo
 	void delayMS(int delay)
@@ -155,7 +157,6 @@ int main(void){
 
 	}
 
-	 */ //<----Retirar comentario multiple y colocar en la linea 125
 }
 
 
