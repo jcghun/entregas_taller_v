@@ -40,6 +40,7 @@ int main(void){
 
 	//Creación de la variable que contiene los días desde el nacimiento
 	origDiasNacimiento = numeroAnios * DIASPORANIO + 78;
+	// Estas contando un dia mas, el 17 solo lleva 12 horas, todo tu calculo desde acá ya esta mal.
 
 	/**
 	 * 3. Para calcular el número de horas desde el nacimiento se puede multiplicar el numero de
@@ -67,6 +68,8 @@ int main(void){
 	 * diasDesdeNacimiento (BIN) = 10011011001101
 	 * horasDesdeNacimiento (BIN) = 111010001101000100
 	 * segDesdeNacimiento (HEX) = 0x3327ec40
+	 *
+	 * //Debido a ese dia de mas, dos de tus resultados estan mal...
 	 */
 
 	/**
@@ -79,6 +82,9 @@ int main(void){
 	 * si se aplica el shift-izq 4 veces al número original se perdería información ya que al correr mas de
 	 * dos veces el primer bit 1 (Posición 16 MSB) se perdería y en su lugar entra un valor 0 a la derecha del
 	 * binario (LSB), no se podría recuperar el mismo valor regresando con un shift-derecha.
+	 *
+	 * // Debias definir una variable mas grande para poder hacer la operación.
+	 * // Cual es la operación matemática que se observa?
 	 */
 	//Aplicación de shift-izq a diasDesdeNacimiento
 	diasDesdeNacimiento = origDiasNacimiento;
@@ -99,6 +105,8 @@ int main(void){
 
 	//Segunda aplicación de shift-der
 	horasDesdeNacimiento = horasDesdeNacimiento >> 1;
+
+	// Falta, no dices cual es la operación que se obtiene.
 
 	/**
 	 * 8. Primero se guarda en una nueva variable el valor original de diasDesdeNacimiento, luego se utiliza la
@@ -126,6 +134,8 @@ int main(void){
 	//Sumando valor de la variable original
 	horasDesdeNacimiento = horasDesdeNacimiento + origHorasNacimiento;
 
+	// Falta una mejor explicación.
+
 	/**
 	 * 9.El numero en la posición #4 es un 7, por lo tanto se hace una mascara para obtener las posiciones 0,2 y 6, para
 	 * realizar esto se recuerda que cada posicion en hexadecimales representa 4 bits binarios, por lo que si se desea obtener
@@ -133,6 +143,7 @@ int main(void){
 	 */
 	//Se realiza la operacion bitwise AND (Máscara)
 	segDesdeNacimiento = origSegNacimiento & 0x0F000F0F;
+	// Incorrecto, el número es un 7, tu error en la operación previa daña todo.
 
 	/**
 	 * 10. En el punto se aplica la máscara 0x040 y dado que el resultado es 0x40 se realiza el item (b)
@@ -150,4 +161,5 @@ int main(void){
 	 */
 	segDesdeNacimiento = !origSegNacimiento;
 	segDesdeNacimiento = !segDesdeNacimiento;
+	// Se podia explicar mejor...
 }
