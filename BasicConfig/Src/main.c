@@ -40,7 +40,7 @@ int main(void){
 		handlerTimer2.ptrTIMx = TIM2;
 		handlerTimer2.TIMx_Config.TIMx_mode = BTIMER_MODE_UP;
 		handlerTimer2.TIMx_Config.TIMx_speed = BTIMER_SPEED_100us;
-		handlerTimer2.TIMx_Config.TIMx_period = 2500;
+		handlerTimer2.TIMx_Config.TIMx_period = 1500;
 		handlerTimer2.TIMx_Config.TIMx_interruptEnable = 1;
 
 		BasicTimer_Config(&handlerTimer2);
