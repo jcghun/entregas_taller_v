@@ -14,16 +14,25 @@
  * del periferico que se está utilizando.
  */
 void USART_Config(USART_Handler_t *ptrUsartHandler){
+
+	//Desactivar las interrupciones globales
+	__disable_irq();
 	/* 1. Activamos la señal de reloj que viene desde el BUS al que pertenece el periferico */
 	/* Lo debemos hacer para cada uno de las pisbles opciones que tengamos (USART1, USART2, USART6) */
     /* 1.1 Configuramos el USART1 */
 	if(ptrUsartHandler->ptrUSARTx == USART1){
-		// Escriba acá su código
+		RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+	}
+	else if (ptrUsartHandler->ptrUSARTx == USART6){
+		RCC->APB2ENR |= RCC_APB2ENR_USART6EN;
+	}
+	else{
+		__NOP();
 	}
 	
     /* 1.2 Configuramos el USART2 */
-    // Escriba acá su código
     
+
     /* 1.3 Configuramos el USART2 */
     // Escriba acá su código
 
@@ -150,6 +159,9 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 	if(ptrUsartHandler->USART_Config.USART_mode != USART_MODE_DISABLE){
 		// Escriba acá su código
 	}
+
+	/* 7. Volvemos a activar las interrupciones del sistema */
+	__enable_irq();
 }
 
 /* funcion para escribir un solo char */
