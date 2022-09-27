@@ -26,6 +26,9 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 	else if (ptrUsartHandler->ptrUSARTx == USART6){
 		RCC->APB2ENR |= RCC_APB2ENR_USART6EN;
 	}
+	else if(ptrUsartHandler->ptrUSARTx == USART2){
+		RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+	}
 	else{
 		__NOP();
 	}
@@ -55,7 +58,7 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 		// Verificamos si se ha seleccionado ODD or EVEN
 		if(ptrUsartHandler->USART_Config.USART_parity == USART_PARITY_EVEN){
 			// Es even, entonces cargamos la configuracion adecuada
-			// Escriba acá su código
+			ptrUsartHandler->ptrUSARTx->CR1 |=
 			
 		}else{
 			// Si es "else" significa que la paridad seleccionada es ODD, y cargamos esta configuracion
