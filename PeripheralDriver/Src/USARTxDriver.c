@@ -2,7 +2,7 @@
  * USARTxDriver.c
  *
  *  Created on: Apr 6, 2022
- *      Author: namontoy
+ *      Author: Juan Camilo Gomez Hidalgo
  */
 
 #include <stm32f4xx.h>
@@ -54,49 +54,58 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 	// Verificamos si el parity esta activado o no
     // Tenga cuidado, el parity hace parte del tamaño de los datos...
 	if(ptrUsartHandler->USART_Config.USART_parity != USART_PARITY_NONE){
+		//Activamos el parity control
+		ptrUsartHandler->ptrUSARTx->CR1 |= USART_CR1_PCE;
 
 		// Verificamos si se ha seleccionado ODD or EVEN
 		if(ptrUsartHandler->USART_Config.USART_parity == USART_PARITY_EVEN){
 			// Es even, entonces cargamos la configuracion adecuada
-			ptrUsartHandler->ptrUSARTx->CR1 |=
+			ptrUsartHandler->ptrUSARTx->CR1 &= ~USART_CR1_PS;
 			
 		}else{
 			// Si es "else" significa que la paridad seleccionada es ODD, y cargamos esta configuracion
-			// Escriba acá su código
+			ptrUsartHandler->ptrUSARTx->CR1 |= USART_CR1_PS;
 		}
 	}else{
 		// Si llegamos aca, es porque no deseamos tener el parity-check
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR1 &= ~USART_CR1_PCE;
 	}
 
 	// 2.3 Configuramos el tamaño del dato
     // Escriba acá su código
+	if(ptrUsartHandler->USART_Config.USART_datasize != USART_DATASIZE_9BIT){
+		ptrUsartHandler->ptrUSARTx->CR1 |= USART_CR1_M;
+	}else{
+		ptrUsartHandler->ptrUSARTx->CR1 &= ~USART_CR1_M;
+	}
 
 	// 2.4 Configuramos los stop bits (SFR USART_CR2)
 	switch(ptrUsartHandler->USART_Config.USART_stopbits){
 	case USART_STOPBIT_1: {
 		// Debemoscargar el valor 0b00 en los dos bits de STOP
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR2 &= ~USART_CR2_STOP;
 		break;
 	}
 	case USART_STOPBIT_0_5: {
 		// Debemoscargar el valor 0b01 en los dos bits de STOP
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR2 &= ~USART_CR2_STOP_1;
+		ptrUsartHandler->ptrUSARTx->CR2 |= USART_CR2_STOP_0;
 		break;
 	}
 	case USART_STOPBIT_2: {
 		// Debemoscargar el valor 0b10 en los dos bits de STOP
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR2 |= USART_CR2_STOP_1;
+		ptrUsartHandler->ptrUSARTx->CR2 &= ~USART_CR2_STOP_0;
 		break;
 	}
 	case USART_STOPBIT_1_5: {
 		// Debemoscargar el valor 0b11 en los dos bits de STOP
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR2 |= USART_CR2_STOP;
 		break;
 	}
 	default: {
 		// En el casopor defecto seleccionamos 1 bit de parada
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR2 &= ~USART_CR2_STOP;
 		break;
 	}
 	}
@@ -113,12 +122,18 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 
 	else if (ptrUsartHandler->USART_Config.USART_baudrate == USART_BAUDRATE_19200) {
 		// El valor a cargar es 52.0625 -> Mantiza = 52,fraction = 0.0625
-		// Mantiza = 52 = 0x34, fraction = 16 * 0.1875 = 1
-		// Escriba acá su código y los comentarios que faltan
+		// Mantiza = 52 = 0x34, fraction = 16 * 0.0625 = 1
+		// Valor a cargar 0x0341
+		// Configurando el Baudrate generator para una velocidad de 19200bps
+		ptrUsartHandler->ptrUSARTx->BRR = 0x0341;
 	}
 
 	else if(ptrUsartHandler->USART_Config.USART_baudrate == USART_BAUDRATE_115200){
-		// Escriba acá su código y los comentarios que faltan
+		// El valor a cargar es 8.6875 -> Mantiza = 8,fraction = 0.6875
+		// Mantiza = 8 = 0x8, fraction = 16 * 0.6875 = 11
+		// Valor a cargar 0x0811
+		// Configurando el Baudrate generator para una velocidad de 115200bps
+		ptrUsartHandler->ptrUSARTx->BRR = 0x0811;
 	}
 
 	// 2.6 Configuramos el modo: TX only, RX only, RXTX, disable
@@ -126,25 +141,28 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 	case USART_MODE_TX:
 	{
 		// Activamos la parte del sistema encargada de enviar
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR1 |= USART_CR1_TE;
 		break;
 	}
 	case USART_MODE_RX:
 	{
 		// Activamos la parte del sistema encargada de recibir
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR1 |= USART_CR1_RE;
 		break;
 	}
 	case USART_MODE_RXTX:
 	{
 		// Activamos ambas partes, tanto transmision como recepcion
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR1 |= USART_CR1_TE;
+		ptrUsartHandler->ptrUSARTx->CR1 |= USART_CR1_RE;
 		break;
 	}
 	case USART_MODE_DISABLE:
 	{
 		// Desactivamos ambos canales
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR1 &= ~USART_CR1_TE;
+		ptrUsartHandler->ptrUSARTx->CR1 &= ~USART_CR1_RE;
+
 		ptrUsartHandler->ptrUSARTx->CR1 &= ~USART_CR1_UE;
 		break;
 	}
@@ -153,7 +171,9 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 	{
 		// Actuando por defecto, desactivamos ambos canales
 		ptrUsartHandler->ptrUSARTx->CR1 &= ~USART_CR1_RE;
-		// Escriba acá su código
+		ptrUsartHandler->ptrUSARTx->CR1 &= ~USART_CR1_TE;
+
+		ptrUsartHandler->ptrUSARTx->CR1 &= ~USART_CR1_UE;
 		break;
 	}
 	}
