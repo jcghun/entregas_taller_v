@@ -73,7 +73,7 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 
 	// 2.3 Configuramos el tamaño del dato
     // Escriba acá su código
-	if(ptrUsartHandler->USART_Config.USART_datasize != USART_DATASIZE_9BIT){
+	if(ptrUsartHandler->USART_Config.USART_datasize == USART_DATASIZE_9BIT){
 		ptrUsartHandler->ptrUSARTx->CR1 |= USART_CR1_M;
 	}else{
 		ptrUsartHandler->ptrUSARTx->CR1 &= ~USART_CR1_M;
@@ -141,7 +141,9 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 	case USART_MODE_TX:
 	{
 		// Activamos la parte del sistema encargada de enviar
+		ptrUsartHandler->ptrUSARTx->CR1 |= USART_CR1_UE;
 		ptrUsartHandler->ptrUSARTx->CR1 |= USART_CR1_TE;
+
 		break;
 	}
 	case USART_MODE_RX:
@@ -180,7 +182,8 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 
 	// 2.7 Activamos el modulo serial.
 	if(ptrUsartHandler->USART_Config.USART_mode != USART_MODE_DISABLE){
-		// Escriba acá su código
+
+
 	}
 
 	/* 7. Volvemos a activar las interrupciones del sistema */
@@ -193,7 +196,9 @@ int writeChar(USART_Handler_t *ptrUsartHandler, int dataToSend ){
 		__NOP();
 	}
 
-	// Escriba acá su código
+
+	ptrUsartHandler->ptrUSARTx->DR = dataToSend;
+
 
 	return dataToSend;
 }

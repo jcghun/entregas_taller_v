@@ -48,7 +48,7 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 	else if(ptrBTimerHandler->ptrTIMx == TIM4){
 		RCC->APB1ENR |= RCC_APB1ENR_TIM4EN;
 	}
-	else if(ptrBTimerHandler->ptrTIMx = TIM5){
+	else if(ptrBTimerHandler->ptrTIMx == TIM5){
 		RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
 	}
 	else{
@@ -108,7 +108,7 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 	else if(ptrBTimerHandler->ptrTIMx == TIM4){
 		NVIC_EnableIRQ(TIM4_IRQn);
 	}
-	else if(ptrBTimerHandler->ptrTIMx = TIM5){
+	else if(ptrBTimerHandler->ptrTIMx == TIM5){
 		NVIC_EnableIRQ(TIM5_IRQn);
 	}
 	else{
