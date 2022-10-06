@@ -65,14 +65,12 @@ int main(void){
 }
 
 
-void BasicTimerX_Callback(void){
+void BasicTimer2_Callback(void){
 	blinky = !blinky;
 
 	if(blinky){
 		GPIO_WritePin(&handlerBlinkyLed, SET);
-		writeChar(&handlerUSART1, "H");
 	}else{
 		GPIO_WritePin(&handlerBlinkyLed, RESET);
-		writeChar(&handlerUSART1, "H");
 	}
 }

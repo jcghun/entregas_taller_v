@@ -119,13 +119,24 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 	__enable_irq();
 }
 
-__attribute__((weak)) void BasicTimerX_Callback(void){
+__attribute__((weak)) void BasicTimer2_Callback(void){
 	  /* NOTE : This function should not be modified, when the callback is needed,
 	            the BasicTimerX_Callback could be implemented in the main file
 	   */
 	__NOP();
 }
 
+__attribute__((weak)) void BasicTimer3_Callback(void){
+	__NOP();
+}
+
+__attribute__((weak)) void BasicTimer4_Callback(void){
+	__NOP();
+}
+
+__attribute__((weak)) void BasicTimer5_Callback(void){
+	__NOP();
+}
 
 /* Esta es la función a la que apunta el sistema en el vector de interrupciones.
  * Se debe utilizar usando exactamente el mismo nombre definido en el vector de interrupciones,
@@ -136,20 +147,20 @@ void TIM2_IRQHandler(void){
 	TIM2->SR &= ~TIM_SR_UIF;
 
 	/* LLamamos a la función que se debe encargar de hacer algo con esta interrupción*/
-	BasicTimerX_Callback();
+	BasicTimer2_Callback();
 }
 
 void TIM3_IRQHandler(void){
 	TIM3->SR &= ~TIM_SR_UIF;
-	BasicTimerX_Callback();
+	BasicTimer3_Callback();
 }
 
 void TIM4_IRQHandler(void){
 	TIM4->SR &= ~TIM_SR_UIF;
-	BasicTimerX_Callback();
+	BasicTimer4_Callback();
 }
 
 void TIM5_IRQHandler(void){
 	TIM5->SR &= ~TIM_SR_UIF;
-	BasicTimerX_Callback();
+	BasicTimer5_Callback();
 }
