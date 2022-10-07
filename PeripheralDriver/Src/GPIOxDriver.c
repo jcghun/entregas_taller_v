@@ -158,3 +158,12 @@ uint32_t GPIO_ReadPin(GPIO_Handler_t *pPinHandler){
 
 	return pinValue;
 }
+
+void GPIOxTooglePin(GPIO_Handler_t *pPinHandler){
+	//Función creada para cambiar el estado de un pin a un handler debidamente configurado previamente
+
+	//Aquí se hace shift al bit 1 un numero de pin veces, cualquier caso que sea el registro ODR del pin, la operación XOR cambia
+	//su estado e invierte ese bit, para posteriormente asignarse al mismo registro.
+
+	pPinHandler->pGPIOx->ODR ^= (1 << pPinHandler->GPIO_PinConfig.GPIO_PinNumber);
+}

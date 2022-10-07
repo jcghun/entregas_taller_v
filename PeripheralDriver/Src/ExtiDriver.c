@@ -148,26 +148,26 @@ void extInt_Config(EXTI_Config_t *extiConfig){
 
 	case 4: {
 		/* SYSCFG_EXTICR1 */
-		SYSCFG->EXTICR[1] &= ~SYSCFG_EXTICR3_EXTI8;
+		SYSCFG->EXTICR[1] &= ~SYSCFG_EXTICR2_EXTI4;
 
 		/* SYSCFG_EXTICR1 */
 		if (extiConfig->pGPIOHandler->pGPIOx == GPIOA) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI8_PA);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI4_PA);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOB) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI8_PB);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI4_PB);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOC) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI8_PC);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI4_PC);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOD) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI8_PD);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI4_PD);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOE) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI8_PE);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI4_PE);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOH) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI8_PH);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI4_PH);
 
 		} else {
 			__NOP();
@@ -178,26 +178,26 @@ void extInt_Config(EXTI_Config_t *extiConfig){
 
 	case 5: {
 		/* SYSCFG_EXTICR1 */
-		SYSCFG->EXTICR[1] &= ~SYSCFG_EXTICR3_EXTI5;
+		SYSCFG->EXTICR[1] &= ~SYSCFG_EXTICR2_EXTI5;
 
 		/* SYSCFG_EXTICR1 */
 		if (extiConfig->pGPIOHandler->pGPIOx == GPIOA) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI5_PA);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI5_PA);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOB) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI5_PB);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI5_PB);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOC) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI5_PC);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI5_PC);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOD) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI5_PD);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI5_PD);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOE) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI5_PE);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI5_PE);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOH) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI5_PH);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI5_PH);
 
 		} else {
 			__NOP();
@@ -208,26 +208,26 @@ void extInt_Config(EXTI_Config_t *extiConfig){
 
 	case 6: {
 		/* SYSCFG_EXTICR1 */
-		SYSCFG->EXTICR[1] &= ~SYSCFG_EXTICR3_EXTI6;
+		SYSCFG->EXTICR[1] &= ~SYSCFG_EXTICR2_EXTI6;
 
 		/* SYSCFG_EXTICR1 */
 		if (extiConfig->pGPIOHandler->pGPIOx == GPIOA) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI6_PA);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI6_PA);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOB) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI6_PB);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI6_PB);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOC) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI6_PC);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI6_PC);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOD) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI6_PD);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI6_PD);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOE) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI6_PE);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI6_PE);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOH) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI6_PH);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI6_PH);
 
 		} else {
 			__NOP();
@@ -238,26 +238,26 @@ void extInt_Config(EXTI_Config_t *extiConfig){
 
 	case 7: {
 		/* SYSCFG_EXTICR1 */
-		SYSCFG->EXTICR[1] &= ~SYSCFG_EXTICR3_EXTI7;
+		SYSCFG->EXTICR[1] &= ~SYSCFG_EXTICR2_EXTI7;
 
 		/* SYSCFG_EXTICR1 */
 		if (extiConfig->pGPIOHandler->pGPIOx == GPIOA) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI7_PA);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI7_PA);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOB) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI7_PB);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI7_PB);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOC) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI7_PC);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI7_PC);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOD) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI7_PD);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI7_PD);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOE) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI7_PE);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI7_PE);
 
 		} else if (extiConfig->pGPIOHandler->pGPIOx == GPIOH) {
-			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR3_EXTI7_PH);
+			SYSCFG->EXTICR[1] |= (SYSCFG_EXTICR2_EXTI7_PH);
 
 		} else {
 			__NOP();
