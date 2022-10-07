@@ -45,6 +45,9 @@ void BasicTimer3_Callback(void);
 void BasicTimer4_Callback(void);
 void BasicTimer5_Callback(void);
 
+void startTimer(BasicTimer_Handler_t *ptrBTimerHandler);
+void stopTimer(BasicTimer_Handler_t *ptrBTimerHandler);
+
 
 
 #endif /* INC_BASICTIMER_H_ */
