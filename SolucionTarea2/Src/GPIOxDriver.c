@@ -160,6 +160,7 @@ uint32_t GPIO_ReadPin(GPIO_Handler_t *pPinHandler){
 	//En caso de que existan mas IDR a la izquierda del que se necesita se hace una MASCARA, esto se hace
 	//para no obtener un valor erroneo y solamente recibir un valor de 1 o 0 segun sea el caso del pin
 	pinValue &= 0b1;
+	// OK
 
 	return pinValue;
 }

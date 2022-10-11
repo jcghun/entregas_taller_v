@@ -147,6 +147,8 @@ int main(void){
 			delayMS(300);			//Delay de ~1s
 			GPIOC->ODR &= ~(1<<10);	//Apagar LED 2
 		}
+		// La idea de la tarea es solucionar los puntos utilizando el gpio driver y no trabajando con los registros
+
 		//Si el boton no es pulsado mantener los LED apagados
 		else{
 			GPIOC->ODR &= ~(1<<12);
