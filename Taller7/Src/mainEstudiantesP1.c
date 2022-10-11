@@ -41,6 +41,7 @@ unsigned int numeroGrande = 1682539;
 
 /* Definición de prototipos de funciones */
 void InitSystem(void);
+void startTimer(BasicTimer_Handler_t *ptrBTimerHandler);
 
 /**
  * Funcion principal del programa.
@@ -148,7 +149,8 @@ void InitSystem(void){
 
 /* Callback del Timer2 - Hacemos un blinky... */
 void BasicTimer2_Callback(void){
-	handlerStateLed.pGPIOx -> ODR ^= GPIO_ODR_OD5;		// Encendido y apagado StateLED
+	//handlerStateLed.pGPIOx -> ODR ^= GPIO_ODR_OD5;		// Encendido y apagado StateLED
+	GPIOxTooglePin(&handlerStateLed);
 }
 
 /* Callback relacionado con la recepción del USART2

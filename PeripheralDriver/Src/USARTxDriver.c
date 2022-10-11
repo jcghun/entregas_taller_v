@@ -246,7 +246,7 @@ uint8_t getRxData(void){
  */
 void USART1_IRQHandler(void){
 	//Evaluamos si la interrupcion que se dio es por RX
-	if(USART1->SR & USART_SR_RXNE){
+	if(USART1->SR & USART_SR_RXNE){ //Máscara que recupera el bit en la posición 5 de USART SR
 		auxRxData = (uint8_t) USART1->DR;
 		usart1Rx_Callback();
 	}
