@@ -13,32 +13,32 @@
 #include "USARTxDriver.h"
 
 BasicTimer_Handler_t handlerTimer2	= {0};
-GPIO_Handler_t handlerBlinkyLed		= {0};
-GPIO_Handler_t handlerTxPin			= {0};
+GPIO_Handler_t handlerStateLed		= {0};
+GPIO_Handler_t handlerEncoderA			= {0};
 USART_Handler_t handlerUSART1		= {0};
 uint8_t blinky = 0;
 
 int main(void){
-		handlerBlinkyLed.pGPIOx = GPIOA;
-		handlerBlinkyLed.GPIO_PinConfig.GPIO_PinNumber 		= PIN_5;
-		handlerBlinkyLed.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
-		handlerBlinkyLed.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
-		handlerBlinkyLed.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
-		handlerBlinkyLed.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		handlerStateLed.pGPIOx = GPIOA;
+		handlerStateLed.GPIO_PinConfig.GPIO_PinNumber 		= PIN_5;
+		handlerStateLed.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
+		handlerStateLed.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerStateLed.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
+		handlerStateLed.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
 
-		GPIO_Config(&handlerBlinkyLed);
-		GPIO_WritePin(&handlerBlinkyLed, SET);
+		GPIO_Config(&handlerStateLed);
+		GPIO_WritePin(&handlerStateLed, SET);
 
 
-		handlerTxPin.pGPIOx = GPIOA;
-		handlerTxPin.GPIO_PinConfig.GPIO_PinNumber 		= PIN_2;
-		handlerTxPin.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_ALTFN;
-		handlerTxPin.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
-		handlerTxPin.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_HIGH;
-		handlerTxPin.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
-		handlerTxPin.GPIO_PinConfig.GPIO_PinAltFunMode	= AF7;
+		handlerEncoderA.pGPIOx = GPIOA;
+		handlerEncoderA.GPIO_PinConfig.GPIO_PinNumber 		= PIN_2;
+		handlerEncoderA.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_ALTFN;
+		handlerEncoderA.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerEncoderA.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_HIGH;
+		handlerEncoderA.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		handlerEncoderA.GPIO_PinConfig.GPIO_PinAltFunMode	= AF7;
 
-		GPIO_Config(&handlerTxPin);
+		GPIO_Config(&handlerEncoderA);
 
 
 		handlerTimer2.ptrTIMx = TIM2;
@@ -69,8 +69,8 @@ void BasicTimer2_Callback(void){
 	blinky = !blinky;
 
 	if(blinky){
-		GPIO_WritePin(&handlerBlinkyLed, SET);
+		GPIO_WritePin(&handlerStateLed, SET);
 	}else{
-		GPIO_WritePin(&handlerBlinkyLed, RESET);
+		GPIO_WritePin(&handlerStateLed, RESET);
 	}
 }
