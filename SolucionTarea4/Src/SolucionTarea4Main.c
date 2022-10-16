@@ -6,7 +6,12 @@
  ******************************************************************************
  */
 
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
 #include <stdint.h>
+
 #include "stm32f4xx.h"
 #include "GPIOxDriver.h"
 #include "BasicTimer.h"
@@ -14,12 +19,27 @@
 #include "ExtiDriver.h"
 
 BasicTimer_Handler_t handlerStateTimer	= {0};
+BasicTimer_Handler_t handlerDisplayTimer	= {0};
 GPIO_Handler_t handlerStateLed		= {0};
 GPIO_Handler_t handlerEncoderCLK			= {0};
 GPIO_Handler_t handlerEncoderDT			= {0};
 USART_Handler_t handlerUSART2		= {0};
 
+//Handlers LED 7 segmentos
+GPIO_Handler_t handlerDisplayRight	= {0};
+GPIO_Handler_t handlerDisplayLeft	= {0};
+
+GPIO_Handler_t handlerDisplayA		= {0};
+GPIO_Handler_t handlerDisplayB		= {0};
+GPIO_Handler_t handlerDisplayC		= {0};
+GPIO_Handler_t handlerDisplayD		= {0};
+GPIO_Handler_t handlerDisplayE		= {0};
+GPIO_Handler_t handlerDisplayF		= {0};
+GPIO_Handler_t handlerDisplayG		= {0};
+
 GPIO_Handler_t handlerLED = {0};
+GPIO_Handler_t handlerUserButton	= {0};
+EXTI_Config_t handlerExtiUsarButton	 = {0};
 
 EXTI_Config_t handlerExtiEncoderCLK		= {0};
 EXTI_Config_t handlerExtiEncoderB		= {0};
@@ -27,14 +47,28 @@ EXTI_Config_t handlerExtiEncoderB		= {0};
 /* Definición de prototipos de funciones */
 void startTimer(BasicTimer_Handler_t *ptrBTimerHandler);
 void defineDirection (void);
+void setDisplay0 (void);
+void setDisplay1 (void);
+void setDisplay2 (void);
+void setDisplay3 (void);
+void setDisplay4 (void);
+void setDisplay5 (void);
+void setDisplay6 (void);
+void setDisplay7 (void);
+void setDisplay8 (void);
+void setDisplay9 (void);
+
+void counter2Display (uint8_t digit);
 
 //Variables
-uint8_t contador = 0;
+uint8_t counter = 0;
+char buffer[64];
 uint8_t dirCW = 0;
 uint8_t dirCCW = 0;
 
 uint8_t clkValue;
-uint8_t dtValue;
+uint32_t dtValue;
+uint8_t rxData = 0;
 
 
 int main(void){
@@ -61,25 +95,28 @@ int main(void){
 		GPIO_Config(&handlerLED);
 		GPIO_WritePin(&handlerLED, SET);
 
-		//Configurando el pin de entrada encoder A para la EXTI
-		handlerEncoderCLK.pGPIOx = GPIOC;
-		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinNumber 		= PIN_0;
-		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_IN;
-		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPDR_NOTHING;
+		//Configurando el pin de entrada encoder CLK para la EXTI
+//		handlerEncoderCLK.pGPIOx = GPIOA;
+//		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinNumber 		= PIN_1;
+//		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_IN;
+//		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPDR_NOTHING;
+		//handlerEncoderCLK.GPIO_PinConfig.GPIO_PinSpeed			= GPIO_OSPEED_FAST;
 
-		GPIO_Config(&handlerEncoderCLK);
+//		GPIO_Config(&handlerEncoderCLK);
 
-		//Configurando la EXTI de encoder A
-		handlerExtiEncoderCLK.pGPIOHandler					= &handlerEncoderCLK;
-		handlerExtiEncoderCLK.edgeType						= EXTERNAL_INTERRUPT_FALLING_EDGE;
-
-		extInt_Config(&handlerExtiEncoderCLK);
+		//Configurando la EXTI de encoder CLK
+//		handlerExtiEncoderCLK.pGPIOHandler					= &handlerEncoderCLK;
+//		handlerExtiEncoderCLK.edgeType						= EXTERNAL_INTERRUPT_FALLING_EDGE;
+//
+//		extInt_Config(&handlerExtiEncoderCLK);
 
 		//Configurando el pin de entrada encoder B para la EXTI
-		handlerEncoderDT.pGPIOx = GPIOC;
-		handlerEncoderDT.GPIO_PinConfig.GPIO_PinNumber 		= PIN_1;
+		handlerEncoderDT.pGPIOx = GPIOA;
+		handlerEncoderDT.GPIO_PinConfig.GPIO_PinNumber 		= PIN_4;
 		handlerEncoderDT.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_IN;
-		handlerEncoderDT.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPDR_NOTHING;
+		handlerEncoderDT.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPDR_PULLUP;
+		handlerEncoderDT.GPIO_PinConfig.GPIO_PinOPType		= GPIO_OTYPE_PUSHPULL;
+		handlerEncoderDT.GPIO_PinConfig.GPIO_PinSpeed		= GPIO_OSPEED_LOW;
 
 		GPIO_Config(&handlerEncoderDT);
 
@@ -92,28 +129,139 @@ int main(void){
 		BasicTimer_Config(&handlerStateTimer);
 		startTimer(&handlerStateTimer);
 
+
+		//Timer displays
+		handlerDisplayTimer.ptrTIMx = TIM3;
+		handlerDisplayTimer.TIMx_Config.TIMx_mode 			= BTIMER_MODE_UP;
+		handlerDisplayTimer.TIMx_Config.TIMx_speed 			= BTIMER_SPEED_1ms;
+		handlerDisplayTimer.TIMx_Config.TIMx_period 			= 350;
+		handlerDisplayTimer.TIMx_Config.TIMx_interruptEnable 	= 1;
+
+		BasicTimer_Config(&handlerDisplayTimer);
+		startTimer(&handlerDisplayTimer);
+
 		handlerUSART2.ptrUSARTx = USART2;
 		handlerUSART2.USART_Config.USART_mode 			= USART_MODE_RXTX;
 		handlerUSART2.USART_Config.USART_baudrate 		= USART_BAUDRATE_115200;
 		handlerUSART2.USART_Config.USART_datasize 		= USART_DATASIZE_8BIT;
 		handlerUSART2.USART_Config.USART_parity 		= USART_PARITY_NONE;
 		handlerUSART2.USART_Config.USART_stopbits 		= USART_STOPBIT_1;
-		handlerUSART2.USART_Config.USART_enableIntRX	= USART_RX_INTERRUP_ENABLE;
+		//handlerUSART2.USART_Config.USART_enableIntRX	= USART_RX_INTERRUP_ENABLE;
 
 		USART_Config(&handlerUSART2);
-    /* Loop forever */
-	while(1){
+
+
+
+		//Pinout leds A-G Dsiplay
+
+		handlerDisplayLeft.pGPIOx		= GPIOB;
+		handlerDisplayLeft.GPIO_PinConfig.GPIO_PinNumber		= PIN_4;
+		handlerDisplayLeft.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
+		handlerDisplayLeft.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerDisplayLeft.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
+		handlerDisplayLeft.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		GPIO_Config(&handlerDisplayLeft);
+		GPIO_WritePin(&handlerDisplayLeft, RESET);
+
+		handlerDisplayRight.pGPIOx		= GPIOB;
+		handlerDisplayRight.GPIO_PinConfig.GPIO_PinNumber		= PIN_5;
+		handlerDisplayRight.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
+		handlerDisplayRight.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerDisplayRight.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
+		handlerDisplayRight.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		GPIO_Config(&handlerDisplayRight);
+		GPIO_WritePin(&handlerDisplayRight, SET);
+
+		handlerDisplayA.pGPIOx			= GPIOH;
+		handlerDisplayA.GPIO_PinConfig.GPIO_PinNumber		= PIN_0;
+		handlerDisplayA.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
+		handlerDisplayA.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerDisplayA.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
+		handlerDisplayA.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		GPIO_Config(&handlerDisplayA);
+		GPIO_WritePin(&handlerDisplayA, RESET);
+
+		handlerDisplayB.pGPIOx			= GPIOH;
+		handlerDisplayB.GPIO_PinConfig.GPIO_PinNumber		= PIN_1;
+		handlerDisplayB.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
+		handlerDisplayB.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerDisplayB.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
+		handlerDisplayB.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		GPIO_Config(&handlerDisplayB);
+		GPIO_WritePin(&handlerDisplayB, RESET);
+
+		handlerDisplayC.pGPIOx			= GPIOC;
+		handlerDisplayC.GPIO_PinConfig.GPIO_PinNumber		= PIN_2;
+		handlerDisplayC.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
+		handlerDisplayC.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerDisplayC.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
+		handlerDisplayC.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		GPIO_Config(&handlerDisplayC);
+		GPIO_WritePin(&handlerDisplayC, RESET);
+
+		handlerDisplayD.pGPIOx			= GPIOC;
+		handlerDisplayD.GPIO_PinConfig.GPIO_PinNumber		= PIN_3;
+		handlerDisplayD.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
+		handlerDisplayD.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerDisplayD.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
+		handlerDisplayD.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		GPIO_Config(&handlerDisplayD);
+		GPIO_WritePin(&handlerDisplayD, RESET);
+
+		handlerDisplayE.pGPIOx			= GPIOC;
+		handlerDisplayE.GPIO_PinConfig.GPIO_PinNumber		= PIN_0;
+		handlerDisplayE.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
+		handlerDisplayE.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerDisplayE.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
+		handlerDisplayE.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		GPIO_Config(&handlerDisplayE);
+		GPIO_WritePin(&handlerDisplayE, RESET);
+
+		handlerDisplayF.pGPIOx			= GPIOC;
+		handlerDisplayF.GPIO_PinConfig.GPIO_PinNumber		= PIN_1;
+		handlerDisplayF.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
+		handlerDisplayF.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerDisplayF.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
+		handlerDisplayF.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		GPIO_Config(&handlerDisplayF);
+		GPIO_WritePin(&handlerDisplayF, RESET);
+
+		handlerDisplayG.pGPIOx			= GPIOB;
+		handlerDisplayG.GPIO_PinConfig.GPIO_PinNumber		= PIN_0;
+		handlerDisplayG.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
+		handlerDisplayG.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
+		handlerDisplayG.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
+		handlerDisplayG.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+		GPIO_Config(&handlerDisplayG);
+		GPIO_WritePin(&handlerDisplayG, SET);
+
+
+
+
+
+
+
+		//Config button
+		handlerUserButton.pGPIOx		= GPIOC;
+		handlerUserButton.GPIO_PinConfig.GPIO_PinNumber		= PIN_13;
+		handlerUserButton.GPIO_PinConfig.GPIO_PinMode		= GPIO_MODE_IN;
+		handlerUserButton.GPIO_PinConfig.GPIO_PinPuPdControl= GPIO_PUPDR_NOTHING;
+		GPIO_Config(&handlerUserButton);
+
+		//Config exti
+		handlerExtiUsarButton.pGPIOHandler	= &handlerUserButton;
+		handlerExtiUsarButton.edgeType		= EXTERNAL_INTERRUPT_FALLING_EDGE;
+		extInt_Config(&handlerExtiUsarButton);
+
+
+
+
 
 		//Revisar continuamente en que sentido esta avanzando el encoder
-		if(dirCW){
-			writeMsg(&handlerUSART2, "CW");
-		}
-		else if(dirCCW){
-			writeMsg(&handlerUSART2, "CCW");
-		}
-		else{
 
-		}
+
+    /* Loop forever */
+	while(1){
 	}
 	return 0;
 }
@@ -123,18 +271,199 @@ void BasicTimer2_Callback(void){
 	GPIOxTooglePin(&handlerStateLed);
 }
 
-void callback_extInt0(void){
-	GPIOxTooglePin(&handlerLED);
-	defineDirection();
+void BasicTimer3_Callback(void){
+	GPIOxTooglePin(&handlerDisplayLeft);
+	GPIOxTooglePin(&handlerDisplayRight);
 }
 
-void defineDirection(void){
-	dtValue = GPIO_ReadPin(&handlerEncoderDT);
+//void callback_extInt1(void){
+//	GPIOxTooglePin(&handlerLED);
+//	defineDirection();
+//}
 
-	if(dtValue){
-		dirCW = 1;
+void defineDirection(void){
+//	dtValue = GPIO_ReadPin(&handlerEncoderDT);
+//
+//	if(dtValue == SET){
+//		dirCW = 1;
+//	}
+//	else{
+//		dirCCW = 1;
+//	}
+//
+//
+//	if(dirCW){
+//		counter += 1;
+//
+//	}
+//	else if(dirCCW){
+//		counter -= 1;
+//	}
+//	else {
+//
+//	}
+
+}
+
+void callback_extInt13(void){
+	counter += 1;
+
+
+
+	if(GPIO_ReadPin(&handlerDisplayLeft) == SET){
+		counter2Display(counter/10);
 	}
-	else{
-		dirCCW = 1;
+	else if(GPIO_ReadPin(&handlerDisplayRight) == SET){
+		counter2Display(counter%10);
+	}
+//	counter2Display(counterD);
+}
+
+void setDisplay0 (void){
+	GPIO_WritePin(&handlerDisplayA, RESET);
+	GPIO_WritePin(&handlerDisplayB, RESET);
+	GPIO_WritePin(&handlerDisplayC, RESET);
+	GPIO_WritePin(&handlerDisplayD, RESET);
+	GPIO_WritePin(&handlerDisplayE, RESET);
+	GPIO_WritePin(&handlerDisplayF, RESET);
+	GPIO_WritePin(&handlerDisplayG, SET);
+}
+
+void setDisplay1 (void){
+	GPIO_WritePin(&handlerDisplayA, SET);
+	GPIO_WritePin(&handlerDisplayB, RESET);
+	GPIO_WritePin(&handlerDisplayC, RESET);
+	GPIO_WritePin(&handlerDisplayD, SET);
+	GPIO_WritePin(&handlerDisplayE, SET);
+	GPIO_WritePin(&handlerDisplayF, SET);
+	GPIO_WritePin(&handlerDisplayG, SET);
+}
+
+void setDisplay2 (void){
+	GPIO_WritePin(&handlerDisplayA, RESET);
+	GPIO_WritePin(&handlerDisplayB, RESET);
+	GPIO_WritePin(&handlerDisplayC, SET);
+	GPIO_WritePin(&handlerDisplayD, RESET);
+	GPIO_WritePin(&handlerDisplayE, RESET);
+	GPIO_WritePin(&handlerDisplayF, SET);
+	GPIO_WritePin(&handlerDisplayG, RESET);
+}
+
+void setDisplay3 (void){
+	GPIO_WritePin(&handlerDisplayA, RESET);
+	GPIO_WritePin(&handlerDisplayB, RESET);
+	GPIO_WritePin(&handlerDisplayC, RESET);
+	GPIO_WritePin(&handlerDisplayD, RESET);
+	GPIO_WritePin(&handlerDisplayE, SET);
+	GPIO_WritePin(&handlerDisplayF, SET);
+	GPIO_WritePin(&handlerDisplayG, RESET);
+}
+
+void setDisplay4 (void){
+	GPIO_WritePin(&handlerDisplayA, SET);
+	GPIO_WritePin(&handlerDisplayB, RESET);
+	GPIO_WritePin(&handlerDisplayC, RESET);
+	GPIO_WritePin(&handlerDisplayD, SET);
+	GPIO_WritePin(&handlerDisplayE, SET);
+	GPIO_WritePin(&handlerDisplayF, RESET);
+	GPIO_WritePin(&handlerDisplayG, RESET);
+}
+
+void setDisplay5 (void){
+	GPIO_WritePin(&handlerDisplayA, RESET);
+	GPIO_WritePin(&handlerDisplayB, SET);
+	GPIO_WritePin(&handlerDisplayC, RESET);
+	GPIO_WritePin(&handlerDisplayD, RESET);
+	GPIO_WritePin(&handlerDisplayE, SET);
+	GPIO_WritePin(&handlerDisplayF, RESET);
+	GPIO_WritePin(&handlerDisplayG, RESET);
+}
+
+void setDisplay6 (void){
+	GPIO_WritePin(&handlerDisplayA, RESET);
+	GPIO_WritePin(&handlerDisplayB, SET);
+	GPIO_WritePin(&handlerDisplayC, RESET);
+	GPIO_WritePin(&handlerDisplayD, RESET);
+	GPIO_WritePin(&handlerDisplayE, RESET);
+	GPIO_WritePin(&handlerDisplayF, RESET);
+	GPIO_WritePin(&handlerDisplayG, RESET);
+}
+
+void setDisplay7 (void){
+	GPIO_WritePin(&handlerDisplayA, RESET);
+	GPIO_WritePin(&handlerDisplayB, RESET);
+	GPIO_WritePin(&handlerDisplayC, RESET);
+	GPIO_WritePin(&handlerDisplayD, SET);
+	GPIO_WritePin(&handlerDisplayE, SET);
+	GPIO_WritePin(&handlerDisplayF, SET);
+	GPIO_WritePin(&handlerDisplayG, SET);
+}
+
+void setDisplay8 (void){
+	GPIO_WritePin(&handlerDisplayA, RESET);
+	GPIO_WritePin(&handlerDisplayB, RESET);
+	GPIO_WritePin(&handlerDisplayC, RESET);
+	GPIO_WritePin(&handlerDisplayD, RESET);
+	GPIO_WritePin(&handlerDisplayE, RESET);
+	GPIO_WritePin(&handlerDisplayF, RESET);
+	GPIO_WritePin(&handlerDisplayG, RESET);
+}
+
+void setDisplay9 (void){
+	GPIO_WritePin(&handlerDisplayA, RESET);
+	GPIO_WritePin(&handlerDisplayB, RESET);
+	GPIO_WritePin(&handlerDisplayC, RESET);
+	GPIO_WritePin(&handlerDisplayD, SET);
+	GPIO_WritePin(&handlerDisplayE, SET);
+	GPIO_WritePin(&handlerDisplayF, RESET);
+	GPIO_WritePin(&handlerDisplayG, RESET);
+}
+
+void counter2Display(uint8_t digit){
+	switch (digit) {
+	case 0: {
+		setDisplay0();
+		break;
+	}
+	case 1:{
+		setDisplay1();
+		break;
+	}
+	case 2:{
+		setDisplay2();
+		break;
+	}
+	case 3:{
+		setDisplay3();
+		break;
+	}
+	case 4:{
+		setDisplay4();
+		break;
+	}
+	case 5:{
+		setDisplay5();
+		break;
+	}
+	case 6:{
+		setDisplay6();
+		break;
+	}
+	case 7:{
+		setDisplay7();
+		break;
+	}
+	case 8:{
+		setDisplay8();
+		break;
+	}
+	case 9:{
+		setDisplay9();
+		break;
+	}
+	default:{
+		setDisplay0();
+		break;
+	}
 	}
 }

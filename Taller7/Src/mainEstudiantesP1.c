@@ -37,7 +37,7 @@ uint8_t rxData = 0;
 char bufferData[64];
 
 // Variables a enviar a través del USART2
-unsigned int numeroGrande = 1682539;
+unsigned int numeroGrande = 0;
 
 /* Definición de prototipos de funciones */
 void InitSystem(void);
