@@ -62,13 +62,12 @@ void counter2Display (uint8_t digit);
 
 //Variables
 uint8_t counter = 0;
-char buffer[64];
 uint8_t dirCW = 0;
 uint8_t dirCCW = 0;
 
 uint8_t clkValue;
 uint32_t dtValue;
-uint8_t rxData = 0;
+//uint8_t rxData = 0;
 
 
 int main(void){
@@ -96,27 +95,26 @@ int main(void){
 		GPIO_WritePin(&handlerLED, SET);
 
 		//Configurando el pin de entrada encoder CLK para la EXTI
-//		handlerEncoderCLK.pGPIOx = GPIOA;
-//		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinNumber 		= PIN_1;
-//		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_IN;
-//		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPDR_NOTHING;
-		//handlerEncoderCLK.GPIO_PinConfig.GPIO_PinSpeed			= GPIO_OSPEED_FAST;
+		handlerEncoderCLK.pGPIOx = GPIOA;
+		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinNumber 		= PIN_8;
+		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_IN;
+		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPDR_NOTHING;
+		handlerEncoderCLK.GPIO_PinConfig.GPIO_PinSpeed			= GPIO_OSPEED_FAST;
 
-//		GPIO_Config(&handlerEncoderCLK);
+		GPIO_Config(&handlerEncoderCLK);
 
 		//Configurando la EXTI de encoder CLK
-//		handlerExtiEncoderCLK.pGPIOHandler					= &handlerEncoderCLK;
-//		handlerExtiEncoderCLK.edgeType						= EXTERNAL_INTERRUPT_FALLING_EDGE;
-//
-//		extInt_Config(&handlerExtiEncoderCLK);
+		handlerExtiEncoderCLK.pGPIOHandler					= &handlerEncoderCLK;
+		handlerExtiEncoderCLK.edgeType						= EXTERNAL_INTERRUPT_RISING_EDGE;
 
-		//Configurando el pin de entrada encoder B para la EXTI
-		handlerEncoderDT.pGPIOx = GPIOA;
-		handlerEncoderDT.GPIO_PinConfig.GPIO_PinNumber 		= PIN_4;
-		handlerEncoderDT.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_IN;
-		handlerEncoderDT.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPDR_PULLUP;
+		extInt_Config(&handlerExtiEncoderCLK);
+
+		//Configurando el pin de entrada encoder DT para la EXTI
+		handlerEncoderDT.pGPIOx = GPIOB;
+		handlerEncoderDT.GPIO_PinConfig.GPIO_PinNumber 		= PIN_10;
+		handlerEncoderDT.GPIO_PinConfig.GPIO_PinMode		= GPIO_MODE_IN;
 		handlerEncoderDT.GPIO_PinConfig.GPIO_PinOPType		= GPIO_OTYPE_PUSHPULL;
-		handlerEncoderDT.GPIO_PinConfig.GPIO_PinSpeed		= GPIO_OSPEED_LOW;
+		handlerEncoderDT.GPIO_PinConfig.GPIO_PinPuPdControl= GPIO_PUPDR_NOTHING;
 
 		GPIO_Config(&handlerEncoderDT);
 
@@ -134,7 +132,7 @@ int main(void){
 		handlerDisplayTimer.ptrTIMx = TIM3;
 		handlerDisplayTimer.TIMx_Config.TIMx_mode 			= BTIMER_MODE_UP;
 		handlerDisplayTimer.TIMx_Config.TIMx_speed 			= BTIMER_SPEED_1ms;
-		handlerDisplayTimer.TIMx_Config.TIMx_period 			= 350;
+		handlerDisplayTimer.TIMx_Config.TIMx_period 			= 11;
 		handlerDisplayTimer.TIMx_Config.TIMx_interruptEnable 	= 1;
 
 		BasicTimer_Config(&handlerDisplayTimer);
@@ -172,7 +170,7 @@ int main(void){
 		GPIO_Config(&handlerDisplayRight);
 		GPIO_WritePin(&handlerDisplayRight, SET);
 
-		handlerDisplayA.pGPIOx			= GPIOH;
+		handlerDisplayA.pGPIOx			= GPIOA;
 		handlerDisplayA.GPIO_PinConfig.GPIO_PinNumber		= PIN_0;
 		handlerDisplayA.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
 		handlerDisplayA.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
@@ -242,16 +240,17 @@ int main(void){
 
 
 		//Config button
-		handlerUserButton.pGPIOx		= GPIOC;
-		handlerUserButton.GPIO_PinConfig.GPIO_PinNumber		= PIN_13;
-		handlerUserButton.GPIO_PinConfig.GPIO_PinMode		= GPIO_MODE_IN;
-		handlerUserButton.GPIO_PinConfig.GPIO_PinPuPdControl= GPIO_PUPDR_NOTHING;
-		GPIO_Config(&handlerUserButton);
-
-		//Config exti
-		handlerExtiUsarButton.pGPIOHandler	= &handlerUserButton;
-		handlerExtiUsarButton.edgeType		= EXTERNAL_INTERRUPT_FALLING_EDGE;
-		extInt_Config(&handlerExtiUsarButton);
+//		handlerUserButton.pGPIOx		= GPIOC;
+//		handlerUserButton.GPIO_PinConfig.GPIO_PinNumber		= PIN_13;
+//		handlerUserButton.GPIO_PinConfig.GPIO_PinMode		= GPIO_MODE_IN;
+//		handlerUserButton.GPIO_PinConfig.GPIO_PinOPType		= GPIO_OTYPE_PUSHPULL;
+//		handlerUserButton.GPIO_PinConfig.GPIO_PinPuPdControl= GPIO_PUPDR_NOTHING;
+//		GPIO_Config(&handlerUserButton);
+//
+//		//Config exti
+//		handlerExtiUsarButton.pGPIOHandler	= &handlerUserButton;
+//		handlerExtiUsarButton.edgeType		= EXTERNAL_INTERRUPT_FALLING_EDGE;
+//		extInt_Config(&handlerExtiUsarButton);
 
 
 
@@ -262,6 +261,17 @@ int main(void){
 
     /* Loop forever */
 	while(1){
+
+
+		if(GPIO_ReadPin(&handlerDisplayLeft) == 1){
+			counter2Display(counter/10);
+		}
+		else if(GPIO_ReadPin(&handlerDisplayRight) == 1){
+			counter2Display(counter%10);
+		}
+
+
+
 	}
 	return 0;
 }
@@ -276,48 +286,27 @@ void BasicTimer3_Callback(void){
 	GPIOxTooglePin(&handlerDisplayRight);
 }
 
-//void callback_extInt1(void){
-//	GPIOxTooglePin(&handlerLED);
-//	defineDirection();
-//}
+void callback_extInt8(void){
+	defineDirection();
+}
 
 void defineDirection(void){
-//	dtValue = GPIO_ReadPin(&handlerEncoderDT);
-//
-//	if(dtValue == SET){
-//		dirCW = 1;
-//	}
-//	else{
-//		dirCCW = 1;
-//	}
-//
-//
-//	if(dirCW){
-//		counter += 1;
-//
-//	}
-//	else if(dirCCW){
-//		counter -= 1;
-//	}
-//	else {
-//
-//	}
-
-}
-
-void callback_extInt13(void){
+	if (GPIO_ReadPin(&handlerEncoderDT) == RESET) {
 	counter += 1;
-
-
-
-	if(GPIO_ReadPin(&handlerDisplayLeft) == SET){
-		counter2Display(counter/10);
+	} else {
+	counter -= 1;
 	}
-	else if(GPIO_ReadPin(&handlerDisplayRight) == SET){
-		counter2Display(counter%10);
-	}
-//	counter2Display(counterD);
+
 }
+
+//void callback_extInt13(void){
+//	counter += 1;
+//
+//
+//
+//
+//	counter2Display(counterD);
+//}
 
 void setDisplay0 (void){
 	GPIO_WritePin(&handlerDisplayA, RESET);
