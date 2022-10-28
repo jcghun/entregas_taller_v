@@ -105,7 +105,7 @@ void configSystem(void){
 
 	//Configuring the encoder's CLK input pin for the EXTI
 	handlerEncoderCLK.pGPIOx 								= GPIOA;
-	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinNumber 		= PIN_8;
+	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinNumber 		= PIN_0;
 	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_IN;
 	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPDR_NOTHING;
 	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinSpeed			= GPIO_OSPEED_FAST;
@@ -114,25 +114,25 @@ void configSystem(void){
 
 	//Setting up the encoder's CLK EXTI
 	handlerExtiEncoderCLK.pGPIOHandler						= &handlerEncoderCLK;
-	handlerExtiEncoderCLK.edgeType							= EXTERNAL_INTERRUPT_RISING_EDGE;
+	handlerExtiEncoderCLK.edgeType							= EXTERNAL_INTERRUPT_FALLING_EDGE;
 
 	extInt_Config(&handlerExtiEncoderCLK);
 
 	//Config the pin for the encoder's button
-	handlerEncoderButton.pGPIOx		= GPIOB;
-	handlerEncoderButton.GPIO_PinConfig.GPIO_PinNumber		= PIN_9;
+	handlerEncoderButton.pGPIOx		= GPIOA;
+	handlerEncoderButton.GPIO_PinConfig.GPIO_PinNumber		= PIN_7;
 	handlerEncoderButton.GPIO_PinConfig.GPIO_PinMode		= GPIO_MODE_IN;
 	handlerEncoderButton.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING;
 	GPIO_Config(&handlerEncoderButton);
 
 	//Setting up the encoder's button EXTI
 	handlerExtiEncoderButton.pGPIOHandler					= &handlerEncoderButton;
-	handlerExtiEncoderButton.edgeType						= EXTERNAL_INTERRUPT_FALLING_EDGE;
+	handlerExtiEncoderButton.edgeType						= EXTERNAL_INTERRUPT_RISING_EDGE;
 	extInt_Config(&handlerExtiEncoderButton);
 
 	//Configuring the encode's DT input pin
-	handlerEncoderDT.pGPIOx 								= GPIOB;
-	handlerEncoderDT.GPIO_PinConfig.GPIO_PinNumber 			= PIN_10;
+	handlerEncoderDT.pGPIOx 								= GPIOA;
+	handlerEncoderDT.GPIO_PinConfig.GPIO_PinNumber 			= PIN_4;
 	handlerEncoderDT.GPIO_PinConfig.GPIO_PinMode			= GPIO_MODE_IN;
 	handlerEncoderDT.GPIO_PinConfig.GPIO_PinOPType			= GPIO_OTYPE_PUSHPULL;
 	handlerEncoderDT.GPIO_PinConfig.GPIO_PinPuPdControl		= GPIO_PUPDR_NOTHING;
@@ -154,7 +154,7 @@ void configSystem(void){
 	handlerDisplayTimer.ptrTIMx 							= TIM3;
 	handlerDisplayTimer.TIMx_Config.TIMx_mode 				= BTIMER_MODE_UP;
 	handlerDisplayTimer.TIMx_Config.TIMx_speed 				= BTIMER_SPEED_1ms;
-	handlerDisplayTimer.TIMx_Config.TIMx_period 			= 11;
+	handlerDisplayTimer.TIMx_Config.TIMx_period 			= 350;
 	handlerDisplayTimer.TIMx_Config.TIMx_interruptEnable 	= 1;
 
 	BasicTimer_Config(&handlerDisplayTimer);
@@ -195,8 +195,8 @@ void configSystem(void){
 
 	//Configuring the pins to energize anodes and decide which one of the digit
 	//to show (via transistor)
-	handlerDisplayLeft.pGPIOx								= GPIOB;
-	handlerDisplayLeft.GPIO_PinConfig.GPIO_PinNumber		= PIN_4;
+	handlerDisplayLeft.pGPIOx								= GPIOA;
+	handlerDisplayLeft.GPIO_PinConfig.GPIO_PinNumber		= PIN_10;
 	handlerDisplayLeft.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_OUT;
 	handlerDisplayLeft.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
 	handlerDisplayLeft.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
@@ -204,8 +204,8 @@ void configSystem(void){
 	GPIO_Config(&handlerDisplayLeft);
 	GPIO_WritePin(&handlerDisplayLeft, RESET);
 
-	handlerDisplayRight.pGPIOx								= GPIOB;
-	handlerDisplayRight.GPIO_PinConfig.GPIO_PinNumber		= PIN_5;
+	handlerDisplayRight.pGPIOx								= GPIOC;
+	handlerDisplayRight.GPIO_PinConfig.GPIO_PinNumber		= PIN_4;
 	handlerDisplayRight.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_OUT;
 	handlerDisplayRight.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_PUSHPULL;
 	handlerDisplayRight.GPIO_PinConfig.GPIO_PinSpeed 		= GPIO_OSPEED_FAST;
@@ -214,8 +214,8 @@ void configSystem(void){
 	GPIO_WritePin(&handlerDisplayRight, SET);
 
 	//Pinout leds A-G Dsiplay
-	handlerDisplayA.pGPIOx									= GPIOA;
-	handlerDisplayA.GPIO_PinConfig.GPIO_PinNumber			= PIN_0;
+	handlerDisplayA.pGPIOx									= GPIOB;
+	handlerDisplayA.GPIO_PinConfig.GPIO_PinNumber			= PIN_15;
 	handlerDisplayA.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_OUT;
 	handlerDisplayA.GPIO_PinConfig.GPIO_PinOPType 			= GPIO_OTYPE_PUSHPULL;
 	handlerDisplayA.GPIO_PinConfig.GPIO_PinSpeed 			= GPIO_OSPEED_FAST;
@@ -223,7 +223,7 @@ void configSystem(void){
 	GPIO_Config(&handlerDisplayA);
 	GPIO_WritePin(&handlerDisplayA, RESET);
 
-	handlerDisplayB.pGPIOx									= GPIOH;
+	handlerDisplayB.pGPIOx									= GPIOB;
 	handlerDisplayB.GPIO_PinConfig.GPIO_PinNumber			= PIN_1;
 	handlerDisplayB.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_OUT;
 	handlerDisplayB.GPIO_PinConfig.GPIO_PinOPType 			= GPIO_OTYPE_PUSHPULL;
@@ -232,8 +232,8 @@ void configSystem(void){
 	GPIO_Config(&handlerDisplayB);
 	GPIO_WritePin(&handlerDisplayB, RESET);
 
-	handlerDisplayC.pGPIOx									= GPIOC;
-	handlerDisplayC.GPIO_PinConfig.GPIO_PinNumber			= PIN_2;
+	handlerDisplayC.pGPIOx									= GPIOB;
+	handlerDisplayC.GPIO_PinConfig.GPIO_PinNumber			= PIN_4;
 	handlerDisplayC.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_OUT;
 	handlerDisplayC.GPIO_PinConfig.GPIO_PinOPType 			= GPIO_OTYPE_PUSHPULL;
 	handlerDisplayC.GPIO_PinConfig.GPIO_PinSpeed 			= GPIO_OSPEED_FAST;
@@ -241,7 +241,7 @@ void configSystem(void){
 	GPIO_Config(&handlerDisplayC);
 	GPIO_WritePin(&handlerDisplayC, RESET);
 
-	handlerDisplayD.pGPIOx									= GPIOC;
+	handlerDisplayD.pGPIOx									= GPIOB;
 	handlerDisplayD.GPIO_PinConfig.GPIO_PinNumber			= PIN_3;
 	handlerDisplayD.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_OUT;
 	handlerDisplayD.GPIO_PinConfig.GPIO_PinOPType 			= GPIO_OTYPE_PUSHPULL;
@@ -250,8 +250,8 @@ void configSystem(void){
 	GPIO_Config(&handlerDisplayD);
 	GPIO_WritePin(&handlerDisplayD, RESET);
 
-	handlerDisplayE.pGPIOx									= GPIOC;
-	handlerDisplayE.GPIO_PinConfig.GPIO_PinNumber			= PIN_0;
+	handlerDisplayE.pGPIOx									= GPIOB;
+	handlerDisplayE.GPIO_PinConfig.GPIO_PinNumber			= PIN_5;
 	handlerDisplayE.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_OUT;
 	handlerDisplayE.GPIO_PinConfig.GPIO_PinOPType 			= GPIO_OTYPE_PUSHPULL;
 	handlerDisplayE.GPIO_PinConfig.GPIO_PinSpeed 			= GPIO_OSPEED_FAST;
@@ -259,8 +259,8 @@ void configSystem(void){
 	GPIO_Config(&handlerDisplayE);
 	GPIO_WritePin(&handlerDisplayE, RESET);
 
-	handlerDisplayF.pGPIOx									= GPIOC;
-	handlerDisplayF.GPIO_PinConfig.GPIO_PinNumber			= PIN_1;
+	handlerDisplayF.pGPIOx									= GPIOB;
+	handlerDisplayF.GPIO_PinConfig.GPIO_PinNumber			= PIN_14;
 	handlerDisplayF.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_OUT;
 	handlerDisplayF.GPIO_PinConfig.GPIO_PinOPType 			= GPIO_OTYPE_PUSHPULL;
 	handlerDisplayF.GPIO_PinConfig.GPIO_PinSpeed 			= GPIO_OSPEED_FAST;
@@ -269,7 +269,7 @@ void configSystem(void){
 	GPIO_WritePin(&handlerDisplayF, RESET);
 
 	handlerDisplayG.pGPIOx									= GPIOB;
-	handlerDisplayG.GPIO_PinConfig.GPIO_PinNumber			= PIN_0;
+	handlerDisplayG.GPIO_PinConfig.GPIO_PinNumber			= PIN_13;
 	handlerDisplayG.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_OUT;
 	handlerDisplayG.GPIO_PinConfig.GPIO_PinOPType 			= GPIO_OTYPE_PUSHPULL;
 	handlerDisplayG.GPIO_PinConfig.GPIO_PinSpeed 			= GPIO_OSPEED_FAST;
@@ -290,12 +290,12 @@ void BasicTimer3_Callback(void){
 }
 
 //Callback used to attend the interruption of encoder's CLK
-void callback_extInt8(void){
+void callback_extInt0(void){
 	defineDisplayAndUsart();
 }
 
 //Callbck used to attend the interruption of encoder's button
-void callback_extInt9(void){
+void callback_extInt7(void){
 	writeMsg(&handlerUSART2, "\n\"software gets slower faster than hardware gets faster\"\n");
 }
 
