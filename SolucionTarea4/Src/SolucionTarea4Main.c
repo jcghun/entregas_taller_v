@@ -293,6 +293,7 @@ void BasicTimer2_Callback(void){
 void BasicTimer3_Callback(void){
 	GPIOxTooglePin(&handlerDisplayLeft);
 	GPIOxTooglePin(&handlerDisplayRight);
+	// La actualización desordenada de los displays hace que se presente este efecto del "fantasma"
 }
 
 //Callback used to attend the interruption of encoder's CLK
@@ -304,6 +305,7 @@ void callback_extInt8(void){
 //Callbck used to attend the interruption of encoder's button
 void callback_extInt7(void){
 	writeMsg(&handlerUSART2, "\n\"software gets slower faster than hardware gets faster\"\n");
+	// Esto no se debe hacer aca, ya que se demora mucho.
 }
 
 //Function used to define the range of the counter, if it increases or decreases
