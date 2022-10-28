@@ -156,6 +156,8 @@ uint32_t GPIO_ReadPin(GPIO_Handler_t *pPinHandler){
 	// del pin especifico
 	pinValue = (pPinHandler->pGPIOx->IDR >> pPinHandler->GPIO_PinConfig.GPIO_PinNumber);
 
+	pinValue &= ~(0xFFFE); //Limpiar todas excepto la primera, mascara de 16 bits
+
 	return pinValue;
 }
 

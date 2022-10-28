@@ -67,6 +67,9 @@ void counter2Display (uint8_t digit);
 
 //Variables
 uint8_t counter = 0;
+uint8_t clkValue = 0;
+uint8_t dtValue = 0;
+
 char bufferCounter[64];
 
 
@@ -80,10 +83,12 @@ int main(void){
 		//Constantly ask which one of the digits in display is on, to decide the number to show
 		//E.g. if counter is 27 display left shows 2, right shows 7 ===> [2|7]
 		if(GPIO_ReadPin(&handlerDisplayLeft) == 1){
-			counter2Display(counter/10);
+			counter2Display(counter%10);
+
 		}
 		else if(GPIO_ReadPin(&handlerDisplayRight) == 1){
-			counter2Display(counter%10);
+			counter2Display(counter/10);
+
 		}
 	}
 	return 0;
@@ -105,9 +110,9 @@ void configSystem(void){
 
 	//Configuring the encoder's CLK input pin for the EXTI
 	handlerEncoderCLK.pGPIOx 								= GPIOA;
-	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinNumber 		= PIN_0;
+	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinNumber 		= PIN_8;
 	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_IN;
-	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPDR_NOTHING;
+	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PUPDR_PULLUP;
 	handlerEncoderCLK.GPIO_PinConfig.GPIO_PinSpeed			= GPIO_OSPEED_FAST;
 
 	GPIO_Config(&handlerEncoderCLK);
@@ -131,11 +136,12 @@ void configSystem(void){
 	extInt_Config(&handlerExtiEncoderButton);
 
 	//Configuring the encode's DT input pin
-	handlerEncoderDT.pGPIOx 								= GPIOA;
-	handlerEncoderDT.GPIO_PinConfig.GPIO_PinNumber 			= PIN_4;
+	handlerEncoderDT.pGPIOx 								= GPIOB;
+	handlerEncoderDT.GPIO_PinConfig.GPIO_PinNumber 			= PIN_10;
 	handlerEncoderDT.GPIO_PinConfig.GPIO_PinMode			= GPIO_MODE_IN;
-	handlerEncoderDT.GPIO_PinConfig.GPIO_PinOPType			= GPIO_OTYPE_PUSHPULL;
-	handlerEncoderDT.GPIO_PinConfig.GPIO_PinPuPdControl		= GPIO_PUPDR_NOTHING;
+//	handlerEncoderDT.GPIO_PinConfig.GPIO_PinOPType			= GPIO_OTYPE_PUSHPULL;
+	handlerEncoderDT.GPIO_PinConfig.GPIO_PinPuPdControl		= GPIO_PUPDR_PULLUP;
+	handlerEncoderDT.GPIO_PinConfig.GPIO_PinSpeed			= GPIO_OSPEED_FAST;
 
 	GPIO_Config(&handlerEncoderDT);
 
@@ -154,7 +160,7 @@ void configSystem(void){
 	handlerDisplayTimer.ptrTIMx 							= TIM3;
 	handlerDisplayTimer.TIMx_Config.TIMx_mode 				= BTIMER_MODE_UP;
 	handlerDisplayTimer.TIMx_Config.TIMx_speed 				= BTIMER_SPEED_1ms;
-	handlerDisplayTimer.TIMx_Config.TIMx_period 			= 350;
+	handlerDisplayTimer.TIMx_Config.TIMx_period 			= 11;
 	handlerDisplayTimer.TIMx_Config.TIMx_interruptEnable 	= 1;
 
 	BasicTimer_Config(&handlerDisplayTimer);
@@ -290,8 +296,9 @@ void BasicTimer3_Callback(void){
 }
 
 //Callback used to attend the interruption of encoder's CLK
-void callback_extInt0(void){
+void callback_extInt8(void){
 	defineDisplayAndUsart();
+
 }
 
 //Callbck used to attend the interruption of encoder's button
@@ -304,22 +311,23 @@ void callback_extInt7(void){
 //if the steps are CW or CCW.
 void defineDisplayAndUsart(void){
 
-	if (GPIO_ReadPin(&handlerEncoderDT) == RESET) {
+	clkValue= GPIO_ReadPin(&handlerEncoderCLK);
+	dtValue = GPIO_ReadPin(&handlerEncoderDT);
 
-		if(counter < 50){
+	if (!clkValue && dtValue){
+		if (counter < 50){
 			counter += 1;
 			writeMsg(&handlerUSART2, "\nencoder CW, pasos = ");
 			sprintf(bufferCounter, "%u\n", counter);
 			writeMsg(&handlerUSART2, bufferCounter);
-		}
-	} else {
+		}}
+	else if (!clkValue && !dtValue){
 		if(counter > 0){
 			counter -= 1;
 			writeMsg(&handlerUSART2, "\nencoder CCW, pasos = ");
 			sprintf(bufferCounter, "%u\n", counter);
 			writeMsg(&handlerUSART2, bufferCounter);
-		}
-	}
+	}}
 
 }
 

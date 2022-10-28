@@ -60,8 +60,8 @@ all: main-build
 main-build: SolucionTarea4.elf secondary-outputs
 
 # Tool invocations
-SolucionTarea4.elf: $(OBJS) $(USER_OBJS) D:\Documentos\GitHub\entregas_taller_v\SolucionTarea4\STM32F411RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "SolucionTarea4.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Documentos\GitHub\entregas_taller_v\SolucionTarea4\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SolucionTarea4.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+SolucionTarea4.elf: $(OBJS) $(USER_OBJS) C:\Users\Usuario0\Documents\GitHub\entregas_taller_v\SolucionTarea4\STM32F411RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "SolucionTarea4.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Usuario0\Documents\GitHub\entregas_taller_v\SolucionTarea4\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SolucionTarea4.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
