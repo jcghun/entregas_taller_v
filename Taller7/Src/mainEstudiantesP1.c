@@ -31,7 +31,7 @@ GPIO_Handler_t handlerPinRx		= {0};
 BasicTimer_Handler_t handlerStateTimer = {0};
 
 // Utiliza la conexion USB
-USART_Handler_t handlerUsart2 = {0};
+USART_Handler_t handlerUsart1 = {0};
 
 uint8_t rxData = 0;
 char bufferData[64];
@@ -62,7 +62,7 @@ int main(void) {
         // por lo tanto entra en el bloque if para analizar que se recibio
 		if(rxData != '\0'){
 			// Imprimimos el caracter recibido (ECO)
-            writeChar(&handlerUsart2, rxData);
+            writeChar(&handlerUsart1, rxData);
 
 			if(rxData == 's'){
 
@@ -70,7 +70,7 @@ int main(void) {
 
 				// Función SprintF
 				sprintf(bufferData, "%u \n", numeroGrande);
-				writeMsg(&handlerUsart2, bufferData);
+				writeMsg(&handlerUsart1, bufferData);
 				}
 
 
@@ -103,7 +103,7 @@ void InitSystem(void){
 
 	/* Configurando los pines sobre los que funciona el USART2 (TX) */
 	handlerPinTx.pGPIOx 							= GPIOA;
-	handlerPinTx.GPIO_PinConfig.GPIO_PinNumber		= PIN_2;
+	handlerPinTx.GPIO_PinConfig.GPIO_PinNumber		= PIN_9;
 	handlerPinTx.GPIO_PinConfig.GPIO_PinMode		= GPIO_MODE_ALTFN;
 	handlerPinTx.GPIO_PinConfig.GPIO_PinOPType		= GPIO_OTYPE_PUSHPULL;
 	handlerPinTx.GPIO_PinConfig.GPIO_PinSpeed		= GPIO_OSPEED_FAST;
@@ -113,7 +113,7 @@ void InitSystem(void){
 
 	/* Configurando los pines sobre los que funciona el USART2 (RX) */
 	handlerPinRx.pGPIOx 							= GPIOA;
-	handlerPinRx.GPIO_PinConfig.GPIO_PinNumber		= PIN_3;
+	handlerPinRx.GPIO_PinConfig.GPIO_PinNumber		= PIN_10;
 	handlerPinRx.GPIO_PinConfig.GPIO_PinMode		= GPIO_MODE_ALTFN;
 	handlerPinRx.GPIO_PinConfig.GPIO_PinOPType		= GPIO_OTYPE_PUSHPULL;
 	handlerPinRx.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING;
@@ -122,16 +122,16 @@ void InitSystem(void){
 	GPIO_Config(&handlerPinRx);
 
 	// Configurando la comunicación serial (Cable verde es TX, Cable Blanco es RX)
-	handlerUsart2.ptrUSARTx 					= USART2;
-	handlerUsart2.USART_Config.USART_baudrate	= USART_BAUDRATE_115200;
-	handlerUsart2.USART_Config.USART_datasize	= USART_DATASIZE_8BIT;
-	handlerUsart2.USART_Config.USART_parity		= USART_PARITY_NONE;
-	handlerUsart2.USART_Config.USART_stopbits	= USART_STOPBIT_1;
-	handlerUsart2.USART_Config.USART_mode		= USART_MODE_RXTX;
-	handlerUsart2.USART_Config.USART_enableIntRX	= USART_RX_INTERRUP_ENABLE;
+	handlerUsart1.ptrUSARTx 					= USART1;
+	handlerUsart1.USART_Config.USART_baudrate	= USART_BAUDRATE_9600;
+	handlerUsart1.USART_Config.USART_datasize	= USART_DATASIZE_8BIT;
+	handlerUsart1.USART_Config.USART_parity		= USART_PARITY_ODD;
+	handlerUsart1.USART_Config.USART_stopbits	= USART_STOPBIT_1;
+	handlerUsart1.USART_Config.USART_mode		= USART_MODE_RXTX;
+	handlerUsart1.USART_Config.USART_enableIntRX	= USART_RX_INTERRUP_ENABLE;
 
 	// Cargamos la configuración del USART
-	USART_Config(&handlerUsart2);
+	USART_Config(&handlerUsart1);
 
 	// Configurando el Timer2 para que funcione con el blinky
 	handlerStateTimer.ptrTIMx 						= TIM2;
@@ -157,7 +157,7 @@ void BasicTimer2_Callback(void){
  * El puerto es leido en la ISR (para bajar la bandera de la interrupción)
  * El caracter que se lee es devuelto por la función getRxData
  */
-void usart2Rx_Callback(void){
+void usart1Rx_Callback(void){
 	// Leemos el valor del registro DR, donde se almacena el dato que llega.
 	// Esto además debe bajar la bandera de la interrupción
 	rxData = getRxData();

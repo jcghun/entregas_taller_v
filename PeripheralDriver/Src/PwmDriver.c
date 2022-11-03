@@ -46,30 +46,54 @@ void pwm_Config(PWM_Handler_t *ptrPwmHandler){
 	switch(ptrPwmHandler->config.channel){
 	case PWM_CHANNEL_1:{
 		// Seleccionamos como salida el canal
-		/* agregue acá su código */
+		ptrPwmHandler->ptrTIMx->CCMR1 &= ~TIM_CCMR1_CC1S;
 
 		// Configuramos el canal como PWM
-		/* agregue acá su código */
+
 
 		// Activamos la funcionalidad de pre-load
-		/* agregue acá su código */
+		ptrPwmHandler->ptrTIMx->CCMR1 |= TIM_CCMR1_OC1PE;
 
 		break;
 	}
 
 	case PWM_CHANNEL_2:{
 		// Seleccionamos como salida el canal
-		/* agregue acá su código */
+		ptrPwmHandler->ptrTIMx->CCMR1 &= ~TIM_CCMR1_CC2S;
 
 		// Configuramos el canal como PWM
 		/* agregue acá su código */
 
 		// Activamos la funcionalidad de pre-load
-		/* agregue acá su código */
+		ptrPwmHandler->ptrTIMx->CCMR1 |= TIM_CCMR1_OC2PE;
 		break;
 	}
 
-    /* agregue acá los otros dos casos */
+	case PWM_CHANNEL_3:{
+		// Seleccionamos como salida el canal
+		ptrPwmHandler->ptrTIMx->CCMR2 &= ~TIM_CCMR2_CC3S;
+
+		// Configuramos el canal como PWM
+
+
+		// Activamos la funcionalidad de pre-load
+		ptrPwmHandler->ptrTIMx->CCMR2 |= TIM_CCMR2_OC3PE;
+
+		break;
+	}
+
+	case PWM_CHANNEL_4:{
+		// Seleccionamos como salida el canal
+		ptrPwmHandler->ptrTIMx->CCMR2 &= ~TIM_CCMR2_CC4S;
+
+		// Configuramos el canal como PWM
+
+
+		// Activamos la funcionalidad de pre-load
+		ptrPwmHandler->ptrTIMx->CCMR2 |= TIM_CCMR2_OC4PE;
+
+		break;
+	}
 
 	default:{
 		break;
