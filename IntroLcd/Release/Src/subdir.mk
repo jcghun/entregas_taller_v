@@ -5,41 +5,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Src/AdcDriver.c \
-../Src/BasicTimer.c \
-../Src/ExtiDriver.c \
-../Src/GPIOxDriver.c \
-../Src/I2CDriver.c \
-../Src/LcdDriverI2C.c \
-../Src/PwmDriver.c \
-../Src/RTC_Driver.c \
-../Src/USARTxDriver.c \
+../Src/mainLCD.c \
 ../Src/syscalls.c \
 ../Src/sysmem.c 
 
 OBJS += \
-./Src/AdcDriver.o \
-./Src/BasicTimer.o \
-./Src/ExtiDriver.o \
-./Src/GPIOxDriver.o \
-./Src/I2CDriver.o \
-./Src/LcdDriverI2C.o \
-./Src/PwmDriver.o \
-./Src/RTC_Driver.o \
-./Src/USARTxDriver.o \
+./Src/mainLCD.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o 
 
 C_DEPS += \
-./Src/AdcDriver.d \
-./Src/BasicTimer.d \
-./Src/ExtiDriver.d \
-./Src/GPIOxDriver.d \
-./Src/I2CDriver.d \
-./Src/LcdDriverI2C.d \
-./Src/PwmDriver.d \
-./Src/RTC_Driver.d \
-./Src/USARTxDriver.d \
+./Src/mainLCD.d \
 ./Src/syscalls.d \
 ./Src/sysmem.d 
 

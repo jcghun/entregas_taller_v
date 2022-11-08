@@ -42,6 +42,7 @@ void GPIO_Config (GPIO_Handler_t *pGPIOHandler);
 void GPIO_WritePin(GPIO_Handler_t *pPinHandler, uint8_t newState);
 uint32_t GPIO_ReadPin(GPIO_Handler_t *pPinHandler);
 void GPIOxTooglePin(GPIO_Handler_t *pPinHandler);
+void delay (int x);
 
 /* Valores estándar para las configuraciones */
 /* 8.4.1 GPIOx_MODER (dos bit por cada PIN) */

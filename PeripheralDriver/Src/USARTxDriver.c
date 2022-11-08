@@ -15,6 +15,8 @@ uint8_t auxRxData = 0;
  * Recordar que siempre se debe comenzar con activar la señal de reloj
  * del periferico que se está utilizando.
  */
+
+
 void USART_Config(USART_Handler_t *ptrUsartHandler){
 
 	//Desactivar las interrupciones globales

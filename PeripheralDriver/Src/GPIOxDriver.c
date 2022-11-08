@@ -169,3 +169,12 @@ void GPIOxTooglePin(GPIO_Handler_t *pPinHandler){
 
 	pPinHandler->pGPIOx->ODR ^= (1 << pPinHandler->GPIO_PinConfig.GPIO_PinNumber);
 }
+
+//Se crea una función para hacer calculos rapidos y aproximados en tiempos de espera.
+void delay (int x){
+	int ms = 0;
+	ms=1240*x;     // constante 1240 se saca con el osciloscopio equivalente a 1 milisegundo
+	for (int i=0; i<ms; i++){
+		__NOP();
+	}
+}

@@ -34,6 +34,7 @@
 #define USART_RX_INTERRUP_ENABLE	0
 #define USART_RX_INTERRUP_DISABLE	1
 
+
 /* Estructura para la configuración de la comunicacion:
  * Velocidad (baudrate)
  * Tamaño de los datos
@@ -85,3 +86,4 @@ void usart6Rx_Callback(void);
 
 
 #endif /* INC_USARTXDRIVER_H_ */
+
