@@ -265,3 +265,14 @@ void BasicTimer2_Callback (void){
 void usart1Rx_Callback(void){
 	rxData = getRxData();
 }
+
+//Revisión Parcial
+//- La comunicación funciona, pero al ejecutar un par de comandos el equipo se bloquea.
+//- No entrega el acelerometro
+//- No entrega el servo.
+//- No es posible verificar el driver del RTC
+//- La inicialización del LCD no funciona.
+//
+//(0+15+5+0+0+25)*5/100
+//
+//Calificación = 2.25
