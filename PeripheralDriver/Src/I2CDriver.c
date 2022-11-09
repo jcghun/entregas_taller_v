@@ -17,6 +17,7 @@
  */
 void i2c_config(I2C_Handler_t *ptrHandlerI2C){
 
+	__disable_irq();
 	/* 1 Activamos la señal de reloj para el modulo I2C seleccionado */
 	if(ptrHandlerI2C->ptrI2Cx == I2C1){
 		RCC->APB1ENR |= RCC_APB1ENR_I2C1EN;
@@ -69,6 +70,8 @@ void i2c_config(I2C_Handler_t *ptrHandlerI2C){
 	}
 	/* 5. Generamos la condición de stop */
 	ptrHandlerI2C->ptrI2Cx->CR1 |= I2C_CR1_PE;
+
+	__enable_irq();
 }
 
 /* 8. Generamos la condicion de stop */
