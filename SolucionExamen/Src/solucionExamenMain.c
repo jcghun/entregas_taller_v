@@ -69,6 +69,8 @@ int main(void)
 					//Agrego esta linea para crear el string con el null al final
 					bufferReception[counterReception] = '\0';
 
+					counterReception = 0;
+
 
 				}
 
@@ -135,7 +137,6 @@ void parseCommands(char *ptrBufferReception){
 
 	else if(strcmp(cmd, "testLcd") == 0){
 		writeMsg(&handlerUsart1, "CMD: testLcd\n");
-		LCD_Init(&handlerI2Clcd);
 		LCD_sendSTR(&handlerI2Clcd, "Test LCD");
 	}
 
@@ -229,9 +230,9 @@ void initSystem(void){
 	/*
 	 * 						Configurando I2C LCD
 	 */
-	//Señal clock PB6  - I2C1
-	handlerI2Cclk.pGPIOx								= GPIOB;
-	handlerI2Cclk.GPIO_PinConfig.GPIO_PinNumber			= PIN_6;
+	//Señal clock PA8  - I2C3
+	handlerI2Cclk.pGPIOx								= GPIOA;
+	handlerI2Cclk.GPIO_PinConfig.GPIO_PinNumber			= PIN_8;
 	handlerI2Cclk.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_ALTFN;
 	handlerI2Cclk.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_OPENDRAIN;
 	handlerI2Cclk.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PUPDR_PULLUP;
@@ -239,9 +240,9 @@ void initSystem(void){
 	handlerI2Cclk.GPIO_PinConfig.GPIO_PinAltFunMode 	= AF4;
 	GPIO_Config(&handlerI2Cclk);
 
-	//Señal data PB7  - I2C1
-	handlerI2Cdata.pGPIOx								= GPIOB;
-	handlerI2Cdata.GPIO_PinConfig.GPIO_PinNumber		= PIN_7;
+	//Señal data PC9  - I2C3
+	handlerI2Cdata.pGPIOx								= GPIOC;
+	handlerI2Cdata.GPIO_PinConfig.GPIO_PinNumber		= PIN_9;
 	handlerI2Cdata.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_ALTFN;
 	handlerI2Cdata.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_OPENDRAIN;
 	handlerI2Cdata.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PUPDR_PULLUP;
@@ -250,7 +251,7 @@ void initSystem(void){
 	GPIO_Config(&handlerI2Cdata);
 
 	//handler I2C
-	handlerI2Clcd.ptrI2Cx							= I2C1;
+	handlerI2Clcd.ptrI2Cx							= I2C3;
 	handlerI2Clcd.slaveAddress						= 0x27; 		//Cargando dirección del esclavo
 	handlerI2Clcd.modeI2C							= I2C_MODE_SM;
 	i2c_config(&handlerI2Clcd);
