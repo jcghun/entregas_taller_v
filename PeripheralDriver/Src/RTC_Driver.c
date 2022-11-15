@@ -134,10 +134,3 @@ uint8_t* read_date(void){
 	return fecha;
 }
 
-
-
-
-
-
-
-

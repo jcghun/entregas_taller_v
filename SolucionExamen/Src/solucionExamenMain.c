@@ -69,6 +69,8 @@ int main(void)
 					//Agrego esta linea para crear el string con el null al final
 					bufferReception[counterReception] = '\0';
 
+					counterReception = 0;
+
 
 				}
 
@@ -229,9 +231,9 @@ void initSystem(void){
 	/*
 	 * 						Configurando I2C LCD
 	 */
-	//Señal clock PB6  - I2C1
-	handlerI2Cclk.pGPIOx								= GPIOB;
-	handlerI2Cclk.GPIO_PinConfig.GPIO_PinNumber			= PIN_6;
+	//Señal clock PA8  - I2C3
+	handlerI2Cclk.pGPIOx								= GPIOA;
+	handlerI2Cclk.GPIO_PinConfig.GPIO_PinNumber			= PIN_8;
 	handlerI2Cclk.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_ALTFN;
 	handlerI2Cclk.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_OPENDRAIN;
 	handlerI2Cclk.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PUPDR_PULLUP;
@@ -239,9 +241,9 @@ void initSystem(void){
 	handlerI2Cclk.GPIO_PinConfig.GPIO_PinAltFunMode 	= AF4;
 	GPIO_Config(&handlerI2Cclk);
 
-	//Señal data PB7  - I2C1
-	handlerI2Cdata.pGPIOx								= GPIOB;
-	handlerI2Cdata.GPIO_PinConfig.GPIO_PinNumber		= PIN_7;
+	//Señal data PC9  - I2C3
+	handlerI2Cdata.pGPIOx								= GPIOC;
+	handlerI2Cdata.GPIO_PinConfig.GPIO_PinNumber		= PIN_9;
 	handlerI2Cdata.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_ALTFN;
 	handlerI2Cdata.GPIO_PinConfig.GPIO_PinOPType 		= GPIO_OTYPE_OPENDRAIN;
 	handlerI2Cdata.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PUPDR_PULLUP;
@@ -265,3 +267,14 @@ void BasicTimer2_Callback (void){
 void usart1Rx_Callback(void){
 	rxData = getRxData();
 }
+
+//Revisión Parcial
+//- La comunicación funciona, pero al ejecutar un par de comandos el equipo se bloquea.
+//- No entrega el acelerometro
+//- No entrega el servo.
+//- No es posible verificar el driver del RTC
+//- La inicialización del LCD no funciona.
+//
+//(0+15+5+0+0+25)*5/100
+//
+//Calificación = 2.25
