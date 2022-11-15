@@ -6,6 +6,8 @@
 "./Src/LcdDriverI2C.o"
 "./Src/PwmDriver.o"
 "./Src/RTC_Driver.o"
+"./Src/SH1106.o"
+"./Src/SpiDriver.o"
 "./Src/USARTxDriver.o"
 "./Src/syscalls.o"
 "./Src/sysmem.o"

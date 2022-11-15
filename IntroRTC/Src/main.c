@@ -123,6 +123,8 @@ void initSystem(void){
 	handlerRTC.RTC_Years				= 2022;
 	handlerRTC.RTC_Wdu					= MONDAY;
 	handlerRTC.RTC_AmPm					= RTC_AMPM;
+
+	rtc_Config(&handlerRTC);
 }
 
 void BasicTimer2_Callback (void){

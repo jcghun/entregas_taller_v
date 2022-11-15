@@ -1,11 +1,8 @@
 /**
  ******************************************************************************
- * @file           : main.c
- * @author         : ejguzmanc
- * @brief          : Configuracion basica del proyecto
- ******************************************************************************
- *
- *
+ * @file           : MainOled.c
+ * @author         : Juan Camilo Gomez Hidalgo
+ * @brief          : Main program body
  ******************************************************************************
  */
 
@@ -14,8 +11,7 @@
 #include "stm32f4xx.h"
 #include "GPIOxDriver.h"
 #include "I2CDriver.h"
-#include "LcdDriver.h"
-
+#include "SH1106.h"
 
 BasicTimer_Handler_t handlerStateTimer = {0};
 GPIO_Handler_t  	handlerStateLed = {0};
@@ -23,49 +19,19 @@ GPIO_Handler_t  	handlerStateLed = {0};
 GPIO_Handler_t  	handlerI2Cclk = {0};
 GPIO_Handler_t  	handlerI2Cdata = {0};
 
-I2C_Handler_t		handlerI2Clcd	={0};
-
-
-/*CABECERAS DE FUNCIONES CREADAS*/
+I2C_Handler_t		handlerI2COled	={0};
 
 void InitSystem(void);
+
 
 int main(void)
 {
 	InitSystem();
-
-	set_cursor(&handlerI2Clcd,0,0);
-	LCD_sendSTR(&handlerI2Clcd, "C.................");
-
-	set_cursor(&handlerI2Clcd,2,0);
-	LCD_sendSTR(&handlerI2Clcd, "Tres");
-
-	set_cursor(&handlerI2Clcd,3,0);
-	LCD_sendSTR(&handlerI2Clcd, "cuatro");
-
-	delay(2000);
-	lcd_clear(&handlerI2Clcd);
-	delay(500);
-
-	set_cursor(&handlerI2Clcd,2,0);
-	LCD_sendSTR(&handlerI2Clcd, "Tres");
-
-
-    /* Loop forever */
 	while(1){
-//	set_cursor(&handlerI2Clcd,0,0);
-//	LCD_sendSTR(&handlerI2Clcd, "Taller V AHHHH");
-//
-//	set_cursor(&handlerI2Clcd,2,0);
-//	LCD_sendSTR(&handlerI2Clcd, "SGjkaGKJSg");
-//	}
-//
-//	delay(1000);
-//	lcd_clear(&handlerI2Clcd);
-//	delay(500);
 
-	//return 0;
-}}
+	}
+	return 0;
+}
 
 void InitSystem(void){
 
@@ -112,18 +78,13 @@ void InitSystem(void){
 	GPIO_Config(&handlerI2Cdata);
 
 	//handler I2C
-	handlerI2Clcd.ptrI2Cx							= I2C1;
-	handlerI2Clcd.slaveAddress						= 0x27; 		//Cargando dirección del esclavo
-	handlerI2Clcd.modeI2C							= I2C_MODE_SM;
+	handlerI2COled.ptrI2Cx							= I2C1;
+	handlerI2COled.slaveAddress						= 0x78; 		//Cargando dirección del esclavo
+	handlerI2COled.modeI2C							= I2C_MODE_FM;
 
-	i2c_config(&handlerI2Clcd);
+	i2c_config(&handlerI2COled);
 
-	LCD_Init(&handlerI2Clcd);
+	sh1106_Init(&handlerI2COled);
 
-	lcd_clear(&handlerI2Clcd);
-}
-
-
-void BasicTimer2_Callback (void){
-	GPIOxTooglePin(&handlerStateLed);
+	//lcd_clear(&handlerI2COled);
 }
