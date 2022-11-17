@@ -5,50 +5,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Src/AdcDriver.c \
-../Src/BasicTimer.c \
-../Src/ExtiDriver.c \
-../Src/GPIOxDriver.c \
-../Src/I2CDriver.c \
-../Src/LcdDriverI2C.c \
-../Src/PllDriver.c \
-../Src/PwmDriver.c \
-../Src/RTC_Driver.c \
-../Src/SH1106.c \
-../Src/SpiDriver.c \
-../Src/USARTxDriver.c \
+../Src/SolucionTarea5main.c \
 ../Src/syscalls.c \
 ../Src/sysmem.c 
 
 OBJS += \
-./Src/AdcDriver.o \
-./Src/BasicTimer.o \
-./Src/ExtiDriver.o \
-./Src/GPIOxDriver.o \
-./Src/I2CDriver.o \
-./Src/LcdDriverI2C.o \
-./Src/PllDriver.o \
-./Src/PwmDriver.o \
-./Src/RTC_Driver.o \
-./Src/SH1106.o \
-./Src/SpiDriver.o \
-./Src/USARTxDriver.o \
+./Src/SolucionTarea5main.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o 
 
 C_DEPS += \
-./Src/AdcDriver.d \
-./Src/BasicTimer.d \
-./Src/ExtiDriver.d \
-./Src/GPIOxDriver.d \
-./Src/I2CDriver.d \
-./Src/LcdDriverI2C.d \
-./Src/PllDriver.d \
-./Src/PwmDriver.d \
-./Src/RTC_Driver.d \
-./Src/SH1106.d \
-./Src/SpiDriver.d \
-./Src/USARTxDriver.d \
+./Src/SolucionTarea5main.d \
 ./Src/syscalls.d \
 ./Src/sysmem.d 
 

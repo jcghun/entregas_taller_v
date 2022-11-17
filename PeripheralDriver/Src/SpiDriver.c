@@ -60,7 +60,7 @@ void spi_config(SPI_Handler_t ptrHandlerSPI){
 		//Selecciona full duplex
 		ptrHandlerSPI.ptrSPIx->CR1 &= ~SPI_CR1_RXONLY;
 		// Selecciona modo unidireccional cada linea tiene solo una direccion
-		ptrHandlerSPI.ptrSPIx &= ~SPI_CR1_BIDIMODE;
+		ptrHandlerSPI.ptrSPIx->CR1 &= ~SPI_CR1_BIDIMODE;
 	}
 	else{
 		// Selecciona solo RX activado
@@ -94,7 +94,7 @@ void spi_config(SPI_Handler_t ptrHandlerSPI){
 }
 
 /**/
-void spi_transmit(SPI_Handler_t ptrHandlerSPI, uint8_t * ptrData, uint8_t dataSize){
+void spi_transmit(SPI_Handler_t ptrHandlerSPI, uint8_t * ptrData, uint32_t dataSize){
 	uint8_t auxData;
 	(void) auxData;
 	while(dataSize > 0){
@@ -130,7 +130,7 @@ void spi_transmit(SPI_Handler_t ptrHandlerSPI, uint8_t * ptrData, uint8_t dataSi
 }
 
 /**/
-void spi_receive(SPI_Handler_t ptrHandlerSPI, uint8_t *ptrData, uint8_t dataSize){
+void spi_receive(SPI_Handler_t ptrHandlerSPI, uint8_t *ptrData, uint32_t dataSize){
 
 	while(dataSize){
 		// Esperamos de nuevo a que el buffer este vacio

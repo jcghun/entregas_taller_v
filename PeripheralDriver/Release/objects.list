@@ -4,6 +4,7 @@
 "./Src/GPIOxDriver.o"
 "./Src/I2CDriver.o"
 "./Src/LcdDriverI2C.o"
+"./Src/PllDriver.o"
 "./Src/PwmDriver.o"
 "./Src/RTC_Driver.o"
 "./Src/SH1106.o"

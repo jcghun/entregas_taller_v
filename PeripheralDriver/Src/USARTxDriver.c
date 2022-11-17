@@ -148,6 +148,14 @@ void USART_Config(USART_Handler_t *ptrUsartHandler){
 		ptrUsartHandler->ptrUSARTx->BRR = 0x008B;
 	}
 
+	else if(ptrUsartHandler->USART_Config.USART_baudrate == USART_BAUDRATE_CUSTOM){
+		// El valor a cargar es 27.126 -> Mantiza = 27,fraction = 0.126
+		// Mantiza = 27 = 0x1B, fraction = 16 * 0.126 = 2
+		// Valor a cargar 0x01B2
+		// Configurando el Baudrate generator para una velocidad de 115200bps para reloj a 100MHz
+		ptrUsartHandler->ptrUSARTx->BRR = 0x01B2;
+	}
+
 	// 2.6 Configuramos el modo: TX only, RX only, RXTX, disable
 	switch(ptrUsartHandler->USART_Config.USART_mode){
 	case USART_MODE_TX:
