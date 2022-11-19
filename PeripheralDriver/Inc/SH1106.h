@@ -25,7 +25,7 @@ typedef struct {
 
 
 void i2c_writeByteOled(I2C_Handler_t *ptrHandlerI2C,  uint8_t newValue); //protocolo sin sendMemoryAddr
-void sh1106_I2C_Write(I2C_Handler_t *ptrHandlerI2C, uint8_t address, uint8_t reg, uint8_t data);
+void sh1106_I2C_Write(I2C_Handler_t *ptrHandlerI2C, uint8_t reg, uint8_t data);
 void sh1106_Init (I2C_Handler_t *ptrHandlerI2C);
 void oled_sendCMD (I2C_Handler_t *ptrHandlerI2C, char cmd);
 void oled_sendata (I2C_Handler_t *ptrHandlerI2C, char data);

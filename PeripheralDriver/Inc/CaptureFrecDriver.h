@@ -33,7 +33,7 @@ typedef struct
 	uint8_t		channel;		//Canal relacionado con el timer
 	uint8_t		edgeSignal;		//Seleccion del tipo de flanco que se desea capturar
 	uint32_t	timerSpeed;		//A que velocidad se incrementa el timer
-	uint32_t	prescalerCapture	//A que velocidad incrementa timer
+	uint32_t	prescalerCapture;	//A que velocidad incrementa timer
 }Capture_Config_t;
 
 typedef struct

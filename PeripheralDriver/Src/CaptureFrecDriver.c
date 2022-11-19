@@ -78,7 +78,7 @@ void capture_Config(Capture_Handler_t *ptrCaptureHandler){
 
 		//Configuramos el filtro (sin filtro)
 		ptrCaptureHandler->ptrTIMx->CCMR1 &= ~(0xF << TIM_CCMR1_IC2F_Pos);
-		ptrCaptureHandler->ptrTIMx->CCMR1 |= (0x3 << TIM_CCMR1_Ic2F_Pos);
+		ptrCaptureHandler->ptrTIMx->CCMR1 |= (0x3 << TIM_CCMR1_IC2F_Pos);
 
 		//Configuramos el prescaler
 		ptrCaptureHandler->ptrTIMx->CCMR1 &= ~(0x3 << TIM_CCMR1_IC2PSC_Pos);
@@ -268,5 +268,77 @@ uint32_t getPeriodFrec(Capture_Handler_t *ptrCaptureHandler){
 
 		break;
 	}
+
+	case CAPTURE_CHANNEL_3: {
+		//Borramos el valor inicial del CCP
+		ptrCaptureHandler->ptrTIMx->CCR3 = 0;
+
+		// Encendemos el timer para que comience a contar
+		ptrCaptureHandler->ptrTIMx->CR1 |= TIM_CR1_CEN;
+
+		//Bajamos la bandera que indica que existe un evento de captura
+		ptrCaptureHandler->ptrTIMx->SR &= ~TIM_SR_CC3IF;
+
+
+		//Esperamos a que se de el primer evento
+		while(!(ptrCaptureHandler->ptrTIMx->SR & TIM_SR_CC3IF)){}
+
+		//Capturamos el valor del tiempo almacenado en el CCRx
+		timestamp = ptrCaptureHandler->ptrTIMx->CCR3;
+
+		//Bajamos la bandera que indica que existe un evento de captura
+		ptrCaptureHandler->ptrTIMx->SR &= ~TIM_SR_CC3IF;
+
+
+		// Esperamos a que se de el primer evento
+		while(!(ptrCaptureHandler->ptrTIMx->SR & TIM_SR_CC3IF)){}
+
+
+		// Capturamos el valor del tiempo almacenado en el CCRx (sin haber reiniciado despues de la
+		// primer captura)
+		timestamp2 = ptrCaptureHandler->ptrTIMx->CCR3;
+
+		deltaTimestamp = timestamp2 - timestamp;
+
+		break;
 	}
+
+	case CAPTURE_CHANNEL_4: {
+		//Borramos el valor inicial del CCP
+		ptrCaptureHandler->ptrTIMx->CCR4 = 0;
+
+		// Encendemos el timer para que comience a contar
+		ptrCaptureHandler->ptrTIMx->CR1 |= TIM_CR1_CEN;
+
+		//Bajamos la bandera que indica que existe un evento de captura
+		ptrCaptureHandler->ptrTIMx->SR &= ~TIM_SR_CC3IF;
+
+
+		//Esperamos a que se de el primer evento
+		while(!(ptrCaptureHandler->ptrTIMx->SR & TIM_SR_CC4IF)){}
+
+		//Capturamos el valor del tiempo almacenado en el CCRx
+		timestamp = ptrCaptureHandler->ptrTIMx->CCR4;
+
+		//Bajamos la bandera que indica que existe un evento de captura
+		ptrCaptureHandler->ptrTIMx->SR &= ~TIM_SR_CC4IF;
+
+
+		// Esperamos a que se de el primer evento
+		while(!(ptrCaptureHandler->ptrTIMx->SR & TIM_SR_CC4IF)){}
+
+
+		// Capturamos el valor del tiempo almacenado en el CCRx (sin haber reiniciado despues de la
+		// primer captura)
+		timestamp2 = ptrCaptureHandler->ptrTIMx->CCR4;
+
+		deltaTimestamp = timestamp2 - timestamp;
+
+		break;
+	}
+	default: {
+		break;
+	}
+	}
+	return deltaTimestamp;
 }
