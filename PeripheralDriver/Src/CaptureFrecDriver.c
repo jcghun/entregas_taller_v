@@ -9,6 +9,9 @@
 
 void capture_Config(Capture_Handler_t *ptrCaptureHandler){
 
+	/* 0. Desactivamos las interrupciones globales mientras configuramos el sistema.*/
+	__disable_irq();
+
 	/* 1. Activar la señal de reloj del periferico requerido*/
 	if(ptrCaptureHandler->ptrTIMx == TIM2){
 		RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
@@ -63,6 +66,9 @@ void capture_Config(Capture_Handler_t *ptrCaptureHandler){
 			ptrCaptureHandler->ptrTIMx->CCER &= ~(TIM_CCER_CC1NP);
 		}
 
+		// Activamos las interrupciones por captura
+		ptrCaptureHandler->ptrTIMx->DIER |= TIM_DIER_CC1IE;
+
 		// Activamos el modulo captura
 		ptrCaptureHandler->ptrTIMx->CCER |= TIM_CCER_CC1E;
 
@@ -95,6 +101,9 @@ void capture_Config(Capture_Handler_t *ptrCaptureHandler){
 			ptrCaptureHandler->ptrTIMx->CCER |= (TIM_CCER_CC2P);
 			ptrCaptureHandler->ptrTIMx->CCER &= ~(TIM_CCER_CC2NP);
 		}
+
+		// Activamos las interrupciones por captura
+		ptrCaptureHandler->ptrTIMx->DIER |= TIM_DIER_CC2IE;
 
 		// Activamos el modulo captura
 		ptrCaptureHandler->ptrTIMx->CCER |= TIM_CCER_CC2E;
@@ -129,6 +138,9 @@ void capture_Config(Capture_Handler_t *ptrCaptureHandler){
 			ptrCaptureHandler->ptrTIMx->CCER &= ~(TIM_CCER_CC3NP);
 		}
 
+		// Activamos las interrupciones por captura
+		ptrCaptureHandler->ptrTIMx->DIER |= TIM_DIER_CC3IE;
+
 		// Activamos el modulo captura
 		ptrCaptureHandler->ptrTIMx->CCER |= TIM_CCER_CC3E;
 
@@ -162,6 +174,9 @@ void capture_Config(Capture_Handler_t *ptrCaptureHandler){
 			ptrCaptureHandler->ptrTIMx->CCER &= ~(TIM_CCER_CC4NP);
 		}
 
+		// Activamos las interrupciones por captura
+		ptrCaptureHandler->ptrTIMx->DIER |= TIM_DIER_CC4IE;
+
 		// Activamos el modulo captura
 		ptrCaptureHandler->ptrTIMx->CCER |= TIM_CCER_CC3E;
 
@@ -176,6 +191,12 @@ void capture_Config(Capture_Handler_t *ptrCaptureHandler){
 
 	// Configuramos el prescaler del timer, el cual define a que velocidad se incrementa nuestro timer
 	ptrCaptureHandler->ptrTIMx->PSC = ptrCaptureHandler->config.timerSpeed;
+
+	/* 6. Activamos el canal del sistema NVIC para que lea la interrupción*/
+	IRQTimer(ptrCaptureHandler);
+
+	/* 7. Volvemos a activar las interrupciones del sistema */
+	__enable_irq();
 }
 
 /* Esta funcion se encarga de lanzar la captura de la frecuencia... en este caso funciona
@@ -341,4 +362,44 @@ uint32_t getPeriodFrec(Capture_Handler_t *ptrCaptureHandler){
 	}
 	}
 	return deltaTimestamp;
+}
+
+//Funcion que permite seleccionar la interrupcion que se dea activar segun el timer
+
+void IRQTimer(Capture_Handler_t *ptrCaptureHandler){
+	if(ptrCaptureHandler->ptrTIMx == TIM2){
+		NVIC_EnableIRQ(TIM2_IRQn);
+	}
+	else if(ptrCaptureHandler->ptrTIMx == TIM3){
+		NVIC_EnableIRQ(TIM3_IRQn);
+	}
+	else if(ptrCaptureHandler->ptrTIMx == TIM4){
+		NVIC_EnableIRQ(TIM4_IRQn);
+	}
+	else if(ptrCaptureHandler->ptrTIMx == TIM5){
+		NVIC_EnableIRQ(TIM5_IRQn);
+	}
+	else{
+		__NOP();
+	}
+}
+
+//Funciones callback definidas weak
+__attribute__((weak)) void CaptureFrec2_Callback(void){
+	  /* NOTE : This function should not be modified, when the callback is needed,
+	            the BasicTimerX_Callback could be implemented in the main file
+	   */
+	__NOP();
+}
+
+__attribute__((weak)) void CaptureFrec3_Callback(void){
+	__NOP();
+}
+
+__attribute__((weak)) void CaptureFrec4_Callback(void){
+	__NOP();
+}
+
+__attribute__((weak)) void CaptureFrec5_Callback(void){
+	__NOP();
 }

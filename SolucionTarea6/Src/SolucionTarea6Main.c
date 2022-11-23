@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file           : IntroCapFreqMain.c
+ * @file           : SolucionTarea6Main.c
  * @author         : Juan Camilo Gomez Hidalgo
  * @brief          : Main program body
  ******************************************************************************

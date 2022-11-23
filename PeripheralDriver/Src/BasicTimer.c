@@ -159,20 +159,24 @@ void TIM2_IRQHandler(void){
 	TIM2->SR &= ~TIM_SR_UIF;
 
 	/* LLamamos a la función que se debe encargar de hacer algo con esta interrupción*/
+	CaptureFrec2_Callback();
 	BasicTimer2_Callback();
 }
 
 void TIM3_IRQHandler(void){
 	TIM3->SR &= ~TIM_SR_UIF;
+	CaptureFrec3_Callback();
 	BasicTimer3_Callback();
 }
 
 void TIM4_IRQHandler(void){
 	TIM4->SR &= ~TIM_SR_UIF;
+	CaptureFrec4_Callback();
 	BasicTimer4_Callback();
 }
 
 void TIM5_IRQHandler(void){
 	TIM5->SR &= ~TIM_SR_UIF;
+	CaptureFrec5_Callback();
 	BasicTimer5_Callback();
 }
