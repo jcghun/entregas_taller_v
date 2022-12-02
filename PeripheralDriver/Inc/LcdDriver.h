@@ -11,6 +11,11 @@
 #include <stm32f4xx.h>
 #include "I2CDriver.h"
 
+typedef struct {
+    uint8_t CurrentX;
+    uint8_t CurrentY;
+} LCD_t;
+
 
 /* Prototipos de las funciones */
 
@@ -23,5 +28,12 @@ void LCD_sendata (I2C_Handler_t *ptrHandlerI2C, char data);
 void LCD_sendSTR(I2C_Handler_t *ptrHandlerI2C, char *str);
 void set_cursor(I2C_Handler_t *ptrHandlerI2C, uint8_t row, uint8_t col);
 void lcd_clear(I2C_Handler_t *ptrHandlerI2C);
+void LCD_setCursor(I2C_Handler_t *ptrHandlerI2C, uint8_t x, uint8_t y);
+
+uint8_t LCD_GetX (void);
+uint8_t LCD_GetY (void);
+
+void cursorShiftL(I2C_Handler_t *ptrHandlerI2C);
+void cursorShiftR(I2C_Handler_t *ptrHandlerI2C);
 
 #endif /* INC_LCD_H_ */

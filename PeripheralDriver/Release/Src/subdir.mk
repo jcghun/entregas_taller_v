@@ -9,6 +9,7 @@ C_SRCS += \
 ../Src/BasicTimer.c \
 ../Src/CaptureFrecDriver.c \
 ../Src/ExtiDriver.c \
+../Src/Fonts.c \
 ../Src/GPIOxDriver.c \
 ../Src/I2CDriver.c \
 ../Src/LcdDriverI2C.c \
@@ -26,6 +27,7 @@ OBJS += \
 ./Src/BasicTimer.o \
 ./Src/CaptureFrecDriver.o \
 ./Src/ExtiDriver.o \
+./Src/Fonts.o \
 ./Src/GPIOxDriver.o \
 ./Src/I2CDriver.o \
 ./Src/LcdDriverI2C.o \
@@ -43,6 +45,7 @@ C_DEPS += \
 ./Src/BasicTimer.d \
 ./Src/CaptureFrecDriver.d \
 ./Src/ExtiDriver.d \
+./Src/Fonts.d \
 ./Src/GPIOxDriver.d \
 ./Src/I2CDriver.d \
 ./Src/LcdDriverI2C.d \

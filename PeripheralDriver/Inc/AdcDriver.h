@@ -1,12 +1,12 @@
 /*
  * AdcDriver.h
  *
- *  Created on: Month XX, 2022
- *      Author: namontoy
+ *  Created on: 12/10/2022
+ *      Author: mmayag
  */
 
-#ifndef INC_ADCDRIVER_H_
-#define INC_ADCDRIVER_H_
+#ifndef ADCDRIVER_H_
+#define ADCDRIVER_H_
 
 #include "stm32f4xx.h"
 
@@ -51,7 +51,7 @@ typedef struct
 	uint8_t		resolution;		// Precisión con la que el ADC hace la adquisición del dato
 	uint16_t	samplingPeriod;	// Tiempo deseado para hacer la adquisición del dato
 	uint8_t		dataAlignment;	// Alineación a la izquierda o a la derecha
-	uint16_t	adcData;			//Dato de la conversión
+	uint16_t	adcData;	    //Dato de la conversión
 }ADC_Config_t;
 
 void adc_Config(ADC_Config_t *adcConfig);
@@ -59,8 +59,11 @@ void configAnalogPin(uint8_t adcChannel);
 void adcComplete_Callback(void);
 void startSingleADC(void);
 void startContinousADC(void);
+void adcConfigExternal(void);
+void adcConfigTimer(void);
 uint16_t getADC(void);
 
 //void ADC_ConfigMultichannel (ADC_Config_t *adcConfig, uint8_t numeroDeCanales);
 
-#endif /* INC_ADCDRIVER_H_ */
+
+#endif /* ADCDRIVER_H_ */

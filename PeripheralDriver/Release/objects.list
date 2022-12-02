@@ -2,6 +2,7 @@
 "./Src/BasicTimer.o"
 "./Src/CaptureFrecDriver.o"
 "./Src/ExtiDriver.o"
+"./Src/Fonts.o"
 "./Src/GPIOxDriver.o"
 "./Src/I2CDriver.o"
 "./Src/LcdDriverI2C.o"

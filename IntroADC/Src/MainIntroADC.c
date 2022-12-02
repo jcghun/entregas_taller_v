@@ -61,7 +61,7 @@ int main(void)
 		//Por lo tanto entra en el bloque if para analizar que se recibio
 		if(rxData != '\0'){
 			//Imprimimos el caracter recibido
-			//writeChar(&handlerCommTerminal, rxData);
+			writeChar(&handlerUsart2, rxData);
 
 			if(rxData == 'm'){
 				//Presentamos un mensaje
@@ -102,6 +102,7 @@ void initSystem(void){
 	handlerBlinkyPin.GPIO_PinConfig.GPIO_PinSpeed	= GPIO_OSPEED_FAST;
 	handlerBlinkyPin.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING;
 	GPIO_Config(&handlerBlinkyPin);
+	GPIO_WritePin(&handlerBlinkyPin, SET);
 
 	//Configurando el pin para el boton azul
 	handlerUserButton.pGPIOx								= GPIOC;
@@ -133,10 +134,12 @@ void initSystem(void){
 	//Configurando el Timer2 para que funcione con el blinky
 	handlerBlinkyTimer.ptrTIMx						= TIM2;
 	handlerBlinkyTimer.TIMx_Config.TIMx_mode		= BTIMER_MODE_UP;
-	handlerBlinkyTimer.TIMx_Config.TIMx_speed		= BTIMER_SPEED_100us;
-	handlerBlinkyTimer.TIMx_Config.TIMx_period		= 2500;
-	//handlerBlinkyTimer.TIMx_Config.TIMx_interruptEnable	= BTIMER_INTERRUP_ENABLE;
+	handlerBlinkyTimer.TIMx_Config.TIMx_speed		= BTIMER_SPEED_1ms;
+	handlerBlinkyTimer.TIMx_Config.TIMx_period		= 250;
+	handlerBlinkyTimer.TIMx_Config.TIMx_interruptEnable	= 1;
+
 	BasicTimer_Config(&handlerBlinkyTimer);
+	startTimer(&handlerBlinkyTimer);
 
 	//Configurando la comunicación serial (Cable verde es TX, cable blanco es RX)
 	handlerUsart2.ptrUSARTx							= USART2;

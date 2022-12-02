@@ -43,7 +43,7 @@ BasicTimer_Handler_t handlerStateTimer = {0};
 
 USART_Handler_t handlerUsart1 = {0};
 
-I2C_Handler_t		handlerI2COled	={0};
+I2C_Handler_t		handlerI2Clcd	={0};
 
 void parseCommands(char *ptrBufferReception);
 void initSystem(void);
@@ -132,22 +132,22 @@ void parseCommands(char *ptrBufferReception){
 		writeMsg(&handlerUsart1, "CMD: initLcd\n");
 
 
-		LCD_Init(&handlerI2COled);
+		LCD_Init(&handlerI2Clcd);
 	}
 
 	else if(strcmp(cmd, "testLcd") == 0){
 		writeMsg(&handlerUsart1, "CMD: testLcd\n");
-		LCD_Init(&handlerI2COled);
-		LCD_sendSTR(&handlerI2COled, "Test LCD");
+		LCD_Init(&handlerI2Clcd);
+		LCD_sendSTR(&handlerI2Clcd, "Test LCD");
 	}
 
 	else if (strcmp(cmd, "clearLcd") == 0){
 		writeMsg(&handlerUsart1, "CMD: clearLcd\n");
-		lcd_clear(&handlerI2COled);
+		lcd_clear(&handlerI2Clcd);
 	}
 	else if (strcmp(cmd, "resetCursor") == 0){
 		writeMsg(&handlerUsart1, "CMD: resetCursor\n");
-		set_cursor(&handlerI2COled, 0, 0);
+		set_cursor(&handlerI2Clcd, 0, 0);
 	}
 
 	else if(strcmp(cmd, "setPeriod") == 0){
@@ -252,10 +252,10 @@ void initSystem(void){
 	GPIO_Config(&handlerI2Cdata);
 
 	//handler I2C
-	handlerI2COled.ptrI2Cx							= I2C1;
-	handlerI2COled.slaveAddress						= 0x27; 		//Cargando dirección del esclavo
-	handlerI2COled.modeI2C							= I2C_MODE_SM;
-	i2c_config(&handlerI2COled);
+	handlerI2Clcd.ptrI2Cx							= I2C1;
+	handlerI2Clcd.slaveAddress						= 0x27; 		//Cargando dirección del esclavo
+	handlerI2Clcd.modeI2C							= I2C_MODE_SM;
+	i2c_config(&handlerI2Clcd);
 }
 
 

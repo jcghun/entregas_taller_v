@@ -2,7 +2,7 @@
  * LcdDriverI2C.c
  *
  *  Created on: 2/11/2022
- *      Author: Juan Camilo Gomez Hidalgo
+ *      Author: Ejguzmanc
  */
 
 #include <stdint.h>
@@ -10,9 +10,13 @@
 #include "LcdDriver.h"
 #include "GPIOxDriver.h"
 
+static LCD_t LCD;
+
 //Protocol de escritura en la LCD
 void i2c_writeByteLcd(I2C_Handler_t *ptrHandlerI2C,  uint8_t newValue){
-	//ptrHandlerI2C->slaveAddress = 0x4E;
+
+	/* 0. Desactivamos las interrupciones globales mientras configuramos el sistema.*/
+	__disable_irq();
 
 	//1. Generamos la condicion de start
 	i2c_startTransaction(ptrHandlerI2C);
@@ -20,36 +24,40 @@ void i2c_writeByteLcd(I2C_Handler_t *ptrHandlerI2C,  uint8_t newValue){
 	//2. Enviamos la dirección del esclavo y la indicación de ESCRIBIR
 	i2c_sendSlaveAddressRW(ptrHandlerI2C, ptrHandlerI2C->slaveAddress, I2C_WRITE_DATA);
 
+
+
 	//4. Enviamos el valor que deseamos escribir en el registro seleccionado
 	i2c_sendDataByte(ptrHandlerI2C, newValue);
 
 	//5. Generamos la condicion de stop, para que el slave se detenga despues de 1 byte
 	i2c_stopTransaction(ptrHandlerI2C);
-	//ptrHandlerI2C->slaveAddress = 0x27;
+
+	//activamos las interrupciones
+	__enable_irq();
 }
 
 //Enviando comandos
 void LCD_sendCMD (I2C_Handler_t *ptrHandlerI2C, char cmd){
 	//ej. CMD = 0b00110000
-	char _U;
-	char _L;
-	uint8_t _T[4];
-	_U=(cmd & 0xf0); //00110000
+	char up;
+	char low;
+	uint8_t T[4];
+	up=(cmd & 0xf0); //00110000
 	//corridos hacia la izquierda y aplicamos mascara para obtener parte baja
-	_L=((cmd<<4) & 0xf0); //00000000
-	_T[0] = _U|0x0C;  //0x0C = 1100 => (P3) 1 = backlight ; (P2) 1 = enable strobe (ayuda a entender a la lcd
-					//enviar un dato o comando); (P1) 0 = Wirte ; (P0)  0 = enviando comado
+	low=((cmd<<4) & 0xf0); //00000000
+	T[0] = up|0x0C;  //0x0C = 1100 => (P3) 1 = backlight ; (P2) 1 = enable strobe (ayuda a entender a la lcd
+					//enviar un dato o comando); (P1) 0 = Wirte ; (P0)  0 = enviando comando
 					//=>ej. 00110000 or 00001100 =00111100
-	i2c_writeByteLcd(ptrHandlerI2C, _T[0]);
-	_T[1] = _U|0x08; //0x08 = 1000 => (P3) 1 = backlight ; (P2) 0 = enable strobe (ayuda a entender a la lcd
+	i2c_writeByteLcd(ptrHandlerI2C, T[0]);
+	T[1] = up|0x08; //0x08 = 1000 => (P3) 1 = backlight ; (P2) 0 = enable strobe (ayuda a entender a la lcd
 	//enviar un dato o comando); (P1) 0 = Wirte ; (P0)  0 = enviando COMANDO
 	//=>ej. 00110000 or 00001100 =00111100
 
-	i2c_writeByteLcd(ptrHandlerI2C, _T[1]);
-	_T[2] = _L|0x0C;
-	i2c_writeByteLcd(ptrHandlerI2C, _T[2]);
-	_T[3] = _L|0x08;
-	i2c_writeByteLcd(ptrHandlerI2C, _T[3]);
+	i2c_writeByteLcd(ptrHandlerI2C, T[1]);
+	T[2] = low|0x0C;
+	i2c_writeByteLcd(ptrHandlerI2C, T[2]);
+	T[3] = low|0x08;
+	i2c_writeByteLcd(ptrHandlerI2C, T[3]);
 
 }
 
@@ -57,41 +65,45 @@ void LCD_sendCMD (I2C_Handler_t *ptrHandlerI2C, char cmd){
 
 void LCD_sendata (I2C_Handler_t *ptrHandlerI2C, char data){
 
-	char _U;
-	char _L;
-	uint8_t _T[4];
-	_U=(data & 0xf0);
-	_L=((data<<4) & 0xf0);
-	_T[0] = _U|0x0D; //0x0D = 1101 => (P3) 1 = backlight ; (P2) 1 = enable strobe (ayuda a entender a la lcd
+	char up;
+	char low;
+	uint8_t T[4];
+	up=(data & 0xf0);
+	low=((data<<4) & 0xf0);
+	T[0] = up|0x0D; //0x0D = 1101 => (P3) 1 = backlight ; (P2) 1 = enable strobe (ayuda a entender a la lcd
 	//enviar un dato o comando); (P1) 0 = Wirte ; (P0)  1 = enviando DATOS
 
-	i2c_writeByteLcd(ptrHandlerI2C, _T[0]);
-	_T[1] = _U|0x09;
-	i2c_writeByteLcd(ptrHandlerI2C, _T[1]);
-	_T[2] = _L|0x0D;
-	i2c_writeByteLcd(ptrHandlerI2C, _T[2]);
-	_T[3] = _L|0x09;
-	i2c_writeByteLcd(ptrHandlerI2C, _T[3]);
+	i2c_writeByteLcd(ptrHandlerI2C, T[0]);
+	T[1] = up|0x09;
+	i2c_writeByteLcd(ptrHandlerI2C, T[1]);
+	T[2] = low|0x0D;
+	i2c_writeByteLcd(ptrHandlerI2C, T[2]);
+	T[3] = low|0x09;
+	i2c_writeByteLcd(ptrHandlerI2C, T[3]);
 
 }
 
-//void LCD_Clear (I2C_Handler_t *ptrHandlerI2C, uint8_t adress) {
-//
-//	LCD_sendata (ptrHandlerI2C, 0x00);
-//	for (int i=0; i<100; i++) {
-//		LCD_sendata (ptrHandlerI2C,' ');
-//	}
-//}
 
 void lcd_clear(I2C_Handler_t *ptrHandlerI2C){
 
 	//Enviamos comando para limpiar display
-	LCD_sendCMD(ptrHandlerI2C,0x01);
+	LCD_sendCMD(ptrHandlerI2C, 0x01);
 	// según el datasheet se espera en el proceso minimo 1.5 ms
 	delay(5);
 }
 
+void LCD_Clear (I2C_Handler_t *ptrHandlerI2C) {
+
+	LCD_sendata (ptrHandlerI2C, 0x00);
+	for (int i=0; i<100; i++) {
+		LCD_sendata (ptrHandlerI2C,' ');
+	}
+}
+
 void LCD_Init (I2C_Handler_t *ptrHandlerI2C) {
+
+	/* 0. Desactivamos las interrupciones globales mientras configuramos el sistema.*/
+	__disable_irq();
 
 	//seún datasheet esperar más de 15 ms
 	delay(45);
@@ -119,6 +131,12 @@ void LCD_Init (I2C_Handler_t *ptrHandlerI2C) {
 	delay(1);
 	//Prendemos el display (Display ON/OFF control ) D=1; C=0; B=0.  B(blinky del cursor)
 	LCD_sendCMD (ptrHandlerI2C, 0x0C);
+
+	LCD.CurrentX = 0;
+	LCD.CurrentY = 0;
+
+	//activamos las interrupciones
+	__enable_irq();
 }
 
 void LCD_sendSTR(I2C_Handler_t *ptrHandlerI2C, char *str) {
@@ -126,31 +144,166 @@ void LCD_sendSTR(I2C_Handler_t *ptrHandlerI2C, char *str) {
 
 }
 
-void set_cursor(I2C_Handler_t *ptrHandlerI2C, uint8_t row, uint8_t col){
+//void set_cursor(I2C_Handler_t *ptrHandlerI2C, uint8_t row, uint8_t col){
+//
+//	switch(row){
+//
+//	case 0:
+//		col |= 0x80;
+//		break;
+//	case 1:
+//		col |= 0xC0;
+//		break;
+//	case 2:
+//		col |= 0x94;
+//		break;
+//	case 3:
+//		col |= 0xD4;
+//		break;
+//	default:
+//		col |= 0x80;
+//		break;
+//
+//	}
+//	LCD_sendCMD(ptrHandlerI2C, col);
+//}
 
-	switch(row){
+void LCD_setCursor(I2C_Handler_t *ptrHandlerI2C, uint8_t x, uint8_t y) {
 
-	case 0:
-		col |= 0x80;
-		break;
-	case 1:
-		col |= 0xC0;
-		break;
-	case 2:
-		col |= 0x94;
-		break;
-	case 3:
-		col |= 0xD4;
-		break;
-	default:
-		col |= 0x80;
+	uint8_t cursor;
+	switch (x) {
+	case 0 :                           /* caso para la primera fila del LCD */
+		switch (y) {
+		/* casos para las casillas de la primera fila */
+		case 0 : cursor = 0x00; break;
+		case 1 : cursor = 0x01; break;
+		case 2 : cursor = 0x02; break;
+		case 3 : cursor = 0x03; break;
+		case 4 : cursor = 0x04; break;
+		case 5 : cursor = 0x05; break;
+		case 6 : cursor = 0x06; break;
+		case 7 : cursor = 0x07; break;
+		case 8 : cursor = 0x08; break;
+		case 9 : cursor = 0x09; break;
+		case 10 : cursor = 0x0A; break;
+		case 11 : cursor = 0x0B; break;
+		case 12 : cursor = 0x0C; break;
+		case 13 : cursor = 0x0D; break;
+		case 14 : cursor = 0x0E; break;
+		case 15 : cursor = 0x0F; break;
+		case 16 : cursor = 0x10; break;
+		case 17 : cursor = 0x11; break;
+		case 18 : cursor = 0x12; break;
+		case 19 : cursor = 0x13; break;
+		}
 		break;
 
+		case 1 :                               /* caso para la segunda fila del LCD */
+			switch (y) {
+			/* casos para las casillas de la segunda fila */
+			case 0 : cursor = 0x40; break;
+			case 1 : cursor = 0x41; break;
+			case 2 : cursor = 0x42; break;
+			case 3 : cursor = 0x43; break;
+			case 4 : cursor = 0x44; break;
+			case 5 : cursor = 0x45; break;
+			case 6 : cursor = 0x46; break;
+			case 7 : cursor = 0x47; break;
+			case 8 : cursor = 0x48; break;
+			case 9 : cursor = 0x49; break;
+			case 10 : cursor = 0x4A; break;
+			case 11 : cursor = 0x4B; break;
+			case 12 : cursor = 0x4C; break;
+			case 13 : cursor = 0x4D; break;
+			case 14 : cursor = 0x4E; break;
+			case 15 : cursor = 0x4F; break;
+			case 16 : cursor = 0x50; break;
+			case 17 : cursor = 0x51; break;
+			case 18 : cursor = 0x52; break;
+			case 19 : cursor = 0x53; break;
+			}
+			break;
+
+			case 2 :                           /* caso para la tercera fila del LCD */
+				switch (y) {
+				/* casos para las casillas de la tercera fila */
+				case 0 : cursor = 0x14; break;
+				case 1 : cursor = 0x15; break;
+				case 2 : cursor = 0x16; break;
+				case 3 : cursor = 0x17; break;
+				case 4 : cursor = 0x18; break;
+				case 5 : cursor = 0x19; break;
+				case 6 : cursor = 0x1A; break;
+				case 7 : cursor = 0x1B; break;
+				case 8 : cursor = 0x1C; break;
+				case 9 : cursor = 0x1D; break;
+				case 10 : cursor = 0x1E; break;
+				case 11 : cursor = 0x1F; break;
+				case 12 : cursor = 0x20; break;
+				case 13 : cursor = 0x21; break;
+				case 14 : cursor = 0x22; break;
+				case 15 : cursor = 0x23; break;
+				case 16 : cursor = 0x24; break;
+				case 17 : cursor = 0x25; break;
+				case 18 : cursor = 0x26; break;
+				case 19 : cursor = 0x27; break;
+				}
+				break;
+
+				case 3 :                           /* caso para la cuarta fila del LCD */
+					switch (y) {
+					/* casos para las casillas de la primera fila */
+					case 0 : cursor = 0x54; break;
+					case 1 : cursor = 0x55; break;
+					case 2 : cursor = 0x56; break;
+					case 3 : cursor = 0x57; break;
+					case 4 : cursor = 0x58; break;
+					case 5 : cursor = 0x59; break;
+					case 6 : cursor = 0x5A; break;
+					case 7 : cursor = 0x5B; break;
+					case 8 : cursor = 0x5C; break;
+					case 9 : cursor = 0x5D; break;
+					case 10 : cursor = 0x5E; break;
+					case 11 : cursor = 0x5F; break;
+					case 12 : cursor = 0x60; break;
+					case 13 : cursor = 0x61; break;
+					case 14 : cursor = 0x62; break;
+					case 15 : cursor = 0x63; break;
+					case 16 : cursor = 0x64; break;
+					case 17 : cursor = 0x65; break;
+					case 18 : cursor = 0x66; break;
+					case 19 : cursor = 0x67; break;
+					}
+					break;
 	}
-	LCD_sendCMD(ptrHandlerI2C, col);
+
+
+
+	LCD_sendCMD(ptrHandlerI2C, 0x80|cursor);
+
 }
 
+uint8_t LCD_GetX (void){
+	return LCD.CurrentX;
+}
+uint8_t LCD_GetY (void){
+	return LCD.CurrentY;
+}
 
+void cursorShiftR(I2C_Handler_t *ptrHandlerI2C){
+	if(LCD_GetX() > 0x4F){
+		LCD.CurrentX = 0;
+	}
+	LCD_sendCMD(ptrHandlerI2C, 0x14);
+	LCD.CurrentX+=1;
+	delay(5);
+}
 
-
-
+void cursorShiftL(I2C_Handler_t *ptrHandlerI2C){
+	if(LCD_GetX() < 0x00){
+		LCD.CurrentX = 0x4F;
+	}
+	LCD_sendCMD(ptrHandlerI2C, 0x14);
+	LCD.CurrentX-=1;
+	delay(5);
+}
