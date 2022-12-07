@@ -27,13 +27,21 @@ void LCD_sendCMD (I2C_Handler_t *ptrHandlerI2C, char cmd);
 void LCD_sendata (I2C_Handler_t *ptrHandlerI2C, char data);
 void LCD_sendSTR(I2C_Handler_t *ptrHandlerI2C, char *str);
 void set_cursor(I2C_Handler_t *ptrHandlerI2C, uint8_t row, uint8_t col);
-void lcd_clear(I2C_Handler_t *ptrHandlerI2C);
 void LCD_setCursor(I2C_Handler_t *ptrHandlerI2C, uint8_t x, uint8_t y);
+
+void LCD_Clear (I2C_Handler_t *ptrHandlerI2C);
 
 uint8_t LCD_GetX (void);
 uint8_t LCD_GetY (void);
 
 void cursorShiftL(I2C_Handler_t *ptrHandlerI2C);
 void cursorShiftR(I2C_Handler_t *ptrHandlerI2C);
+void cursorShiftD(I2C_Handler_t *ptrHandlerI2C);
+void cursorShiftU(I2C_Handler_t *ptrHandlerI2C);
+void cursorHome(I2C_Handler_t *ptrHandlerI2C);
+void cursorBS(I2C_Handler_t *ptrHandlerI2C);
 
+void cursorRestartShiftR(I2C_Handler_t *ptrHandlerI2C);
+void cursorRestartShiftL(I2C_Handler_t *ptrHandlerI2C);
+void cursorInRestart(I2C_Handler_t *ptrHandlerI2C);
 #endif /* INC_LCD_H_ */

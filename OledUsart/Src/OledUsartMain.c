@@ -42,7 +42,6 @@ uint8_t rxData = 0;
 uint8_t noValidWord = 0;
 uint8_t achieved = 0;
 uint16_t validPosX[] = {0x05, 0x10, 0x1B, 0x26, 0x31};
-uint8_t validPosY[] = {0x0A, 0x23};
 uint8_t position = 0;
 char bufferData[5];
 char solution[5];

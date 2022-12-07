@@ -28,7 +28,7 @@ GPIO_Handler_t handlerEncoderCLK			= {0};
 GPIO_Handler_t handlerEncoderDT				= {0};
 GPIO_Handler_t handlerPinTx					= {0};
 GPIO_Handler_t handlerPinRx					= {0};
-GPIO_Handler_t handlerEncoderButton			= {0};
+GPIO_Handler_t handlerJoystickButton			= {0};
 
 //7 segment handlers LEDs
 GPIO_Handler_t handlerDisplayRight			= {0};
@@ -46,7 +46,7 @@ GPIO_Handler_t handlerDisplayG				= {0};
 USART_Handler_t handlerUSART2				= {0};
 
 //Necessary EXTI handlers
-EXTI_Config_t handlerExtiEncoderButton	 	= {0};
+EXTI_Config_t handlerExtiJoystickButton	 	= {0};
 EXTI_Config_t handlerExtiEncoderCLK			= {0};
 
 /* Definition of function prototypes */
@@ -124,16 +124,16 @@ void configSystem(void){
 	extInt_Config(&handlerExtiEncoderCLK);
 
 	//Config the pin for the encoder's button
-	handlerEncoderButton.pGPIOx		= GPIOA;
-	handlerEncoderButton.GPIO_PinConfig.GPIO_PinNumber		= PIN_7;
-	handlerEncoderButton.GPIO_PinConfig.GPIO_PinMode		= GPIO_MODE_IN;
-	handlerEncoderButton.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING;
-	GPIO_Config(&handlerEncoderButton);
+	handlerJoystickButton.pGPIOx		= GPIOA;
+	handlerJoystickButton.GPIO_PinConfig.GPIO_PinNumber		= PIN_7;
+	handlerJoystickButton.GPIO_PinConfig.GPIO_PinMode		= GPIO_MODE_IN;
+	handlerJoystickButton.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING;
+	GPIO_Config(&handlerJoystickButton);
 
 	//Setting up the encoder's button EXTI
-	handlerExtiEncoderButton.pGPIOHandler					= &handlerEncoderButton;
-	handlerExtiEncoderButton.edgeType						= EXTERNAL_INTERRUPT_RISING_EDGE;
-	extInt_Config(&handlerExtiEncoderButton);
+	handlerExtiJoystickButton.pGPIOHandler					= &handlerJoystickButton;
+	handlerExtiJoystickButton.edgeType						= EXTERNAL_INTERRUPT_RISING_EDGE;
+	extInt_Config(&handlerExtiJoystickButton);
 
 	//Configuring the encode's DT input pin
 	handlerEncoderDT.pGPIOx 								= GPIOB;

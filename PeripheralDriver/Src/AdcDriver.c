@@ -55,9 +55,6 @@ void adc_Config(ADC_Config_t *adcConfig){
 	}
 	}
 
-	/*4.Configuramos el modo scan como desactivado*/
-	//ADC1->CR1 &= ~ADC_CR1_SCAN;
-
 	//Configuramos el modo scan como activado para varias conversiones ADC
 	ADC1->CR1 |= ADC_CR1_SCAN;
 
@@ -90,9 +87,6 @@ void adc_Config(ADC_Config_t *adcConfig){
 		ADC1->SMPR1 |= (adcConfig->samplingPeriod << (3*(adcConfig->channel)));
 
 	}
-	/*8.Configuramos la secuencia y cuentos elementos hay en la secuencia */
-	// AL hacelo tod 0 , estamos seleccionando solo 1 elemento en el conteo de la secuencia
-	//ADC1->SQR1 = 0;
 
 	// configuramos la cantidad de conversiones ADC que se harán
 
@@ -254,13 +248,15 @@ void configAnalogPin(uint8_t adcChannel){
 	}
 	case ADC_CHANNEL_6:
 	{
-		// Buscar y configurar adecuadamente
+		handlerAdcPin.pGPIOx 						= GPIOA;
+		handlerAdcPin.GPIO_PinConfig.GPIO_PinNumber = PIN_6;
 
 		break;
 	}
 	case ADC_CHANNEL_7:
 	{
-		// Buscar y configurar adecuadamente
+		handlerAdcPin.pGPIOx 						= GPIOA;
+		handlerAdcPin.GPIO_PinConfig.GPIO_PinNumber = PIN_7;
 
 		break;
 	}
@@ -272,37 +268,43 @@ void configAnalogPin(uint8_t adcChannel){
 		break;
 	}
 	case ADC_CHANNEL_9: {
-		// Buscar y configurar adecuadamente
+		handlerAdcPin.pGPIOx 						= GPIOB;
+		handlerAdcPin.GPIO_PinConfig.GPIO_PinNumber = PIN_1;
 
 		break;
 	}
 	case ADC_CHANNEL_10: {
-		// Buscar y configurar adecuadamente
+		handlerAdcPin.pGPIOx 						= GPIOC;
+		handlerAdcPin.GPIO_PinConfig.GPIO_PinNumber = PIN_0;
 
 		break;
 	}
 	case ADC_CHANNEL_11: {
-		// Buscar y configurar adecuadamente
+		handlerAdcPin.pGPIOx 						= GPIOC;
+		handlerAdcPin.GPIO_PinConfig.GPIO_PinNumber = PIN_1;
 
 		break;
 	}
 	case ADC_CHANNEL_12: {
-		// Buscar y configurar adecuadamente
+		handlerAdcPin.pGPIOx 						= GPIOC;
+		handlerAdcPin.GPIO_PinConfig.GPIO_PinNumber = PIN_2;
 
 		break;
 	}
 	case ADC_CHANNEL_13: {
-		// Buscar y configurar adecuadamente
+		handlerAdcPin.pGPIOx 						= GPIOC;
+		handlerAdcPin.GPIO_PinConfig.GPIO_PinNumber = PIN_3;
 
 		break;
 	}
 	case ADC_CHANNEL_14: {
-		// Buscar y configurar adecuadamente
-
+		handlerAdcPin.pGPIOx 						= GPIOC;
+		handlerAdcPin.GPIO_PinConfig.GPIO_PinNumber = PIN_4;
 		break;
 	}
 	case ADC_CHANNEL_15: {
-		// Buscar y configurar adecuadamente
+		handlerAdcPin.pGPIOx 						= GPIOC;
+		handlerAdcPin.GPIO_PinConfig.GPIO_PinNumber = PIN_5;
 
 		break;
 	}

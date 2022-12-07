@@ -22,7 +22,6 @@ static uint8_t SH1106_Buffer[SH1106_WIDTH * SH1106_HEIGHT / 8];
 
 void sh1106_Init (I2C_Handler_t *ptrHandlerI2C){
 
-	//delay(1000);
 
 	oled_sendCMD(ptrHandlerI2C, 0xAE);
 	oled_sendCMD(ptrHandlerI2C, 0xD5);
@@ -33,85 +32,23 @@ void sh1106_Init (I2C_Handler_t *ptrHandlerI2C){
 	oled_sendCMD(ptrHandlerI2C, 0x00);
 	oled_sendCMD(ptrHandlerI2C, 0x40);
 	oled_sendCMD(ptrHandlerI2C, 0xAD);
-	//oled_sendCMD(ptrHandlerI2C, 0x8A);
 	oled_sendCMD(ptrHandlerI2C, 0x8D);
 	oled_sendCMD(ptrHandlerI2C, 0xA1);
 	oled_sendCMD(ptrHandlerI2C, 0xC8);
 	oled_sendCMD(ptrHandlerI2C, 0xDA);
 	oled_sendCMD(ptrHandlerI2C, 0x12);
 	oled_sendCMD(ptrHandlerI2C, 0x81);
-	//oled_sendCMD(ptrHandlerI2C, 0xFF);
 	oled_sendCMD(ptrHandlerI2C, 0xCF);
 	oled_sendCMD(ptrHandlerI2C, 0xD9);
-	//oled_sendCMD(ptrHandlerI2C, 0x1F);
 	oled_sendCMD(ptrHandlerI2C, 0x22);
 	oled_sendCMD(ptrHandlerI2C, 0xDB);
 	oled_sendCMD(ptrHandlerI2C, 0x40);
 	oled_sendCMD(ptrHandlerI2C, 0x40);	//REPITE
 	oled_sendCMD(ptrHandlerI2C, 0x32);
-	//oled_sendCMD(ptrHandlerI2C, 0xA6);
+
 	oled_sendCMD(ptrHandlerI2C, 0xA4);
 	oled_sendCMD(ptrHandlerI2C, 0xA6);
 	oled_sendCMD(ptrHandlerI2C, 0xAF);
-
-//	oled_sendCMD(ptrHandlerI2C, 0xAE);
-//	oled_sendCMD(ptrHandlerI2C, 0x02);
-//	oled_sendCMD(ptrHandlerI2C, 0x10);
-//	oled_sendCMD(ptrHandlerI2C, 0x40);
-//	oled_sendCMD(ptrHandlerI2C, 0xB0);
-//	oled_sendCMD(ptrHandlerI2C, 0x81);
-//	oled_sendCMD(ptrHandlerI2C, 0xBF);
-//	oled_sendCMD(ptrHandlerI2C, 0xA1);
-//	oled_sendCMD(ptrHandlerI2C, 0xA6);
-//	oled_sendCMD(ptrHandlerI2C, 0xA8 );
-//	oled_sendCMD(ptrHandlerI2C, 0x3F);
-//	oled_sendCMD(ptrHandlerI2C, 0xAD);
-//	oled_sendCMD(ptrHandlerI2C, 0x8A);
-//	oled_sendCMD(ptrHandlerI2C, 0x32);
-//	oled_sendCMD(ptrHandlerI2C, 0xC8);
-//	oled_sendCMD(ptrHandlerI2C, 0xD3);
-//	oled_sendCMD(ptrHandlerI2C, 0x00);
-//	oled_sendCMD(ptrHandlerI2C, 0xD5);
-//	oled_sendCMD(ptrHandlerI2C, 0x80);
-//	oled_sendCMD(ptrHandlerI2C, 0xD9);
-//	oled_sendCMD(ptrHandlerI2C, 0x22);
-//	oled_sendCMD(ptrHandlerI2C, 0xDA);
-//	oled_sendCMD(ptrHandlerI2C, 0x12);
-//	oled_sendCMD(ptrHandlerI2C, 0xDB);
-//	oled_sendCMD(ptrHandlerI2C, 0x40);
-//	oled_sendCMD(ptrHandlerI2C, 0xAF);
-
-
-//	oled_sendCMD(ptrHandlerI2C, 0xAE); // Display off
-//	oled_sendCMD(ptrHandlerI2C, 0xA6); // Divide ratio/osc mode SET
-//	oled_sendCMD(ptrHandlerI2C, 0xD5);
-//	oled_sendCMD(ptrHandlerI2C, 0x80); // SET multiplex radio
-//	oled_sendCMD(ptrHandlerI2C, 0xA8);
-//	oled_sendCMD(ptrHandlerI2C, 0x3F); //Display offset mode SET
-//	oled_sendCMD(ptrHandlerI2C, 0xBF);
-//	oled_sendCMD(ptrHandlerI2C, 0xD3);
-//	oled_sendCMD(ptrHandlerI2C, 0x00);
-//	oled_sendCMD(ptrHandlerI2C, (0x40 | 0x00) ); // Set segment remap
-//	oled_sendCMD(ptrHandlerI2C, 0x8E); // Set com output scan direct
-//	oled_sendCMD(ptrHandlerI2C, 0x14); // Set com pins hardware config
-//	oled_sendCMD(ptrHandlerI2C, 0x20);
-//	oled_sendCMD(ptrHandlerI2C, 0x00); //Set contrast color
-//	oled_sendCMD(ptrHandlerI2C, 0xA1);
-//	oled_sendCMD(ptrHandlerI2C, 0xC8); // Precharge period mode SET
-//	oled_sendCMD(ptrHandlerI2C, 0xDA);
-//	oled_sendCMD(ptrHandlerI2C, 0x12); //VCOMH deselect level
-//	oled_sendCMD(ptrHandlerI2C, 0x81);
-//	oled_sendCMD(ptrHandlerI2C, 0xCF); // Set entire display ON
-//	oled_sendCMD(ptrHandlerI2C, 0xD9);
-//	oled_sendCMD(ptrHandlerI2C, 0xF1);
-//	oled_sendCMD(ptrHandlerI2C, 0xDB);
-//	oled_sendCMD(ptrHandlerI2C, 0x40);
-//	oled_sendCMD(ptrHandlerI2C, 0xA4);
-//	oled_sendCMD(ptrHandlerI2C, 0xA6);
-//	oled_sendCMD(ptrHandlerI2C, 0x2E);
-//	oled_sendCMD(ptrHandlerI2C, 0xAF);
-
-//	SH1106_Fill();
 
 	SH1106_Clear();
 

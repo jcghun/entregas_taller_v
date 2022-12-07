@@ -84,14 +84,6 @@ void LCD_sendata (I2C_Handler_t *ptrHandlerI2C, char data){
 }
 
 
-void lcd_clear(I2C_Handler_t *ptrHandlerI2C){
-
-	//Enviamos comando para limpiar display
-	LCD_sendCMD(ptrHandlerI2C, 0x01);
-	// según el datasheet se espera en el proceso minimo 1.5 ms
-	delay(5);
-}
-
 void LCD_Clear (I2C_Handler_t *ptrHandlerI2C) {
 
 	LCD_sendata (ptrHandlerI2C, 0x00);
@@ -101,10 +93,6 @@ void LCD_Clear (I2C_Handler_t *ptrHandlerI2C) {
 }
 
 void LCD_Init (I2C_Handler_t *ptrHandlerI2C) {
-
-	/* 0. Desactivamos las interrupciones globales mientras configuramos el sistema.*/
-	__disable_irq();
-
 	//seún datasheet esperar más de 15 ms
 	delay(45);
 	LCD_sendCMD (ptrHandlerI2C, 0x30);
@@ -134,9 +122,6 @@ void LCD_Init (I2C_Handler_t *ptrHandlerI2C) {
 
 	LCD.CurrentX = 0;
 	LCD.CurrentY = 0;
-
-	//activamos las interrupciones
-	__enable_irq();
 }
 
 void LCD_sendSTR(I2C_Handler_t *ptrHandlerI2C, char *str) {
@@ -144,31 +129,9 @@ void LCD_sendSTR(I2C_Handler_t *ptrHandlerI2C, char *str) {
 
 }
 
-//void set_cursor(I2C_Handler_t *ptrHandlerI2C, uint8_t row, uint8_t col){
-//
-//	switch(row){
-//
-//	case 0:
-//		col |= 0x80;
-//		break;
-//	case 1:
-//		col |= 0xC0;
-//		break;
-//	case 2:
-//		col |= 0x94;
-//		break;
-//	case 3:
-//		col |= 0xD4;
-//		break;
-//	default:
-//		col |= 0x80;
-//		break;
-//
-//	}
-//	LCD_sendCMD(ptrHandlerI2C, col);
-//}
-
 void LCD_setCursor(I2C_Handler_t *ptrHandlerI2C, uint8_t x, uint8_t y) {
+
+
 
 	uint8_t cursor;
 	switch (x) {
@@ -276,13 +239,12 @@ void LCD_setCursor(I2C_Handler_t *ptrHandlerI2C, uint8_t x, uint8_t y) {
 					}
 					break;
 	}
-
-
-
 	LCD_sendCMD(ptrHandlerI2C, 0x80|cursor);
-
 }
 
+/*
+ * Funcion para obtener dinamicamente la posiion del cursor
+ */
 uint8_t LCD_GetX (void){
 	return LCD.CurrentX;
 }
@@ -290,20 +252,160 @@ uint8_t LCD_GetY (void){
 	return LCD.CurrentY;
 }
 
+/*
+ * Permite mover el cursor a la derecha solo si este no se encuentra en el extremo derecho
+ */
 void cursorShiftR(I2C_Handler_t *ptrHandlerI2C){
-	if(LCD_GetX() > 0x4F){
-		LCD.CurrentX = 0;
+
+	//Aumenta en 1 la posicion del cursor si no esta en el extremo derecho
+	if(LCD.CurrentX != 0x06 && LCD.CurrentX != 0x2E && LCD.CurrentX != 0x1A && LCD.CurrentX != 0x41){
+		LCD_sendCMD(ptrHandlerI2C, 0x14);
+		LCD.CurrentX+=1;
+		delay(5);
 	}
-	LCD_sendCMD(ptrHandlerI2C, 0x14);
-	LCD.CurrentX+=1;
-	delay(5);
 }
 
+/*
+ * Permite mover el cursor a la izquierda solo si este no se encuentra en el extremo izquierdo
+ */
 void cursorShiftL(I2C_Handler_t *ptrHandlerI2C){
-	if(LCD_GetX() < 0x00){
-		LCD.CurrentX = 0x4F;
+
+	//Disminuye en 1 la posicion del cursor si no esta en el extremo izquierdo
+	if(LCD.CurrentX != 0x00 && LCD.CurrentX != 0x28 && LCD.CurrentX != 0x14 && LCD.CurrentX != 0x3C){
+		LCD_sendCMD(ptrHandlerI2C, 0x10);
+		LCD.CurrentX-=1;
+		delay(5);
 	}
-	LCD_sendCMD(ptrHandlerI2C, 0x14);
-	LCD.CurrentX-=1;
-	delay(5);
+}
+
+/*
+ * Permite mover el cursor hacia abajo solo si este no se encuentra en el extremo inferior
+ */
+void cursorShiftD(I2C_Handler_t *ptrHandlerI2C){
+	if(LCD.CurrentX != 60 && LCD.CurrentX != 61 && LCD.CurrentX != 62 && LCD.CurrentX != 63
+			&& LCD.CurrentX != 64 && LCD.CurrentX != 65 && LCD.CurrentX != 26){
+
+		if(LCD.CurrentX/10 == 0){
+			uint8_t i;
+			for(i=0; i<40; i++){
+				LCD_sendCMD(ptrHandlerI2C, 0x14);
+				delay(1);
+			}
+			LCD.CurrentX+=40;
+			LCD.CurrentY+=1;
+		}
+		else if(LCD.CurrentX/10 == 4){
+			uint8_t i;
+			for(i=0; i<20; i++){
+				LCD_sendCMD(ptrHandlerI2C, 0x10);
+				delay(1);
+			}
+			LCD.CurrentX-=20;
+			LCD.CurrentY+=1;
+		}
+		else if(LCD.CurrentX/10 == 2){
+			uint8_t i;
+			for(i=0; i<40; i++){
+				LCD_sendCMD(ptrHandlerI2C, 0x14);
+				delay(1);
+			}
+			LCD.CurrentX+=40;
+			LCD.CurrentY+=1;
+		}
+	}
+}
+
+/*
+ * Permite mover el cursor hacia arriba solo si este no se encuentra en el extremo superior
+ */
+void cursorShiftU(I2C_Handler_t *ptrHandlerI2C){
+	if(LCD.CurrentX != 0 && LCD.CurrentX != 1 && LCD.CurrentX != 2 && LCD.CurrentX != 3
+			&& LCD.CurrentX != 4 && LCD.CurrentX != 5 && LCD.CurrentX != 6){
+
+		if(LCD.CurrentX/10 == 6){
+			uint8_t i;
+			for(i=0; i<40; i++){
+				LCD_sendCMD(ptrHandlerI2C, 0x10);
+				delay(1);
+			}
+			LCD.CurrentX-=40;
+			LCD.CurrentY-=1;
+		}
+		else if(LCD.CurrentX/10 == 2){
+			uint8_t i;
+			for(i=0; i<20; i++){
+				LCD_sendCMD(ptrHandlerI2C, 0x14);
+				delay(1);
+			}
+			LCD.CurrentX+=20;
+			LCD.CurrentY-=1;
+		}
+		else if(LCD.CurrentX/10 == 4){
+			uint8_t i;
+			for(i=0; i<40; i++){
+				LCD_sendCMD(ptrHandlerI2C, 0x10);
+				delay(1);
+			}
+			LCD.CurrentX-=40;
+			LCD.CurrentY-=1;
+		}
+	}
+}
+
+/*
+ * Posiciona el cursor de LCD en la primera fila primera columna
+ */
+void cursorHome(I2C_Handler_t *ptrHandlerI2C){
+	LCD_sendCMD(ptrHandlerI2C,2);
+	LCD.CurrentX = 0;
+	LCD.CurrentY = 0;
+}
+
+/*
+ * Posiciona el cursor de LCD en el "caracter" backspace a partir del cursor home
+ */
+void cursorBS(I2C_Handler_t *ptrHandlerI2C){
+	uint8_t i;
+	for(i=0;i<6;i++){
+		LCD_sendCMD(ptrHandlerI2C, 0x14);
+	}
+	LCD.CurrentX = 6;
+	LCD.CurrentY = 0;
+}
+
+/*
+ * Posiciona el cursor en el valor 0x21 que corresponde a la opcion "S" en restart
+ */
+void cursorInRestart(I2C_Handler_t *ptrHandlerI2C){
+	LCD_sendCMD(ptrHandlerI2C, 0x80|0x21);
+	LCD.CurrentX = 35;
+	LCD.CurrentY = 2;
+}
+
+/*
+ * funcion que solamente puede ejecutar un shift a la derecha
+ */
+void cursorRestartShiftR(I2C_Handler_t *ptrHandlerI2C){
+
+	//Aumenta en 1 la posicion del cursor si no esta en el extremo derecho
+	if(LCD.CurrentX != 37){
+		LCD_sendCMD(ptrHandlerI2C, 0x14);
+		LCD_sendCMD(ptrHandlerI2C, 0x14);
+		LCD.CurrentX+=2;
+		delay(5);
+	}
+}
+
+/*
+ * funcion que solamente puede ejecutar un shift a la izquierda
+ */
+void cursorRestartShiftL(I2C_Handler_t *ptrHandlerI2C){
+
+	//Disminuye en 1 la posicion del cursor si no esta en el extremo izquierdo
+	if(LCD.CurrentX != 35){
+		LCD_sendCMD(ptrHandlerI2C, 0x10);
+		LCD_sendCMD(ptrHandlerI2C, 0x10);
+		LCD.CurrentX-=2;
+		delay(5);
+	}
 }
