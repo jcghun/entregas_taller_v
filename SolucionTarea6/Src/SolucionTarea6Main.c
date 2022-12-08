@@ -197,3 +197,11 @@ void cmdCapture (void){
 
 	}
 }
+
+/*
+ * Hola Camilo, es muy particular como decides controlar el fluijo del programa, dependiendo de la interrupción generada por la captura.
+ * En general uno no deberia tener un cosas sucediendo permanentemente, sino que se deberia poder seleccionar y lanzar/detener lo
+ * que uno necesita.
+ *
+ * Calificación = 4.5
+ * */
